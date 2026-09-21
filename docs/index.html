@@ -5,120 +5,27 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>思己 · 跑步数据</title>
 <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
-<style>
-  :root{--bg:#0b1220;--card:#111a2e;--border:#24314d;--txt:#e2e8f0;--muted:#8fa0bd;--accent:#38bdf8}
-  *{box-sizing:border-box}
-  body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',system-ui,sans-serif;background:var(--bg);color:var(--fg);margin:0;padding:0}
-  .wrap{max-width:960px;margin:0 auto;padding:30px 16px 70px}
-  h1{font-size:26px;margin:0 0 4px}
-  .sub{color:var(--muted);font-size:14px;margin-bottom:24px}
-  .updated{color:var(--muted);font-size:13px;text-align:right;margin-bottom:6px}
-  .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:24px}
-  @media(min-width:700px){.stats{grid-template-columns:repeat(3,1fr)}}
-  .stat{background:var(--card);border:1px solid #1e2b44;border-radius:14px;padding:14px}
-  .stat b{display:block;font-size:24px;color:#7dd3fc;font-weight:700}
-  .stat span{font-size:12px;color:var(--muted)}
-  .chart-card{background:var(--card);border:1px solid #1e2b44;border-radius:16px;padding:12px;margin-bottom:16px}
-  .chart-card h2{font-size:15px;color:#cbd5e1;margin:6px 8px 10px;font-weight:600}
-  .foot{color:var(--muted);font-size:12px;text-align:center;margin-top:24px}
-  a{color:var(--accent)}
-</style>
+<link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
 <div class="wrap">
-  <div style="display:flex;justify-content:space-between;align-items:baseline">
-    <div>
-      <h1>🏃 思己 · 跑步数据</h1>
-      <div class="sub">七日半马挑战 · 从 9 月 1 日起累计 · 自动同步 COROS</div>
-    </div>
+  <div class="head">
+    <h1>思己 · 跑步数据</h1>
+    <div class="sub">累计趋势 · 七月半马挑战</div>
   </div>
-  <div class="updated" id="updated">加载中…</div>
+  <div class="updated" id="updated"></div>
 
-  <div class="stats">
-    <div class="stat"><b data-k="totalKm"></b><span>累计跑量 (km)</span></div>
-    <div class="stat"><b data-k="runs"></b><span>跑步场次</span></div>
-    <div class="stat"><b data-k="bestPace"></b><span>最佳配速 (min/km)</span></div>
-    <div class="stat"><b data-k="avgHr"></b><span>平均心率 (bpm)</span></div>
-    <div class="stat"><b data-k="avgKm"></b><span>场均距离 (km)</span></div>
-    <div class="stat"><b data-k="streak"></b><span>最长连续半马 (天)</span></div>
-  </div>
+  <section class="stats" id="stats"></section>
 
-  <div class="chart-card"><h2>距离与时长</h2><div id="c1" style="height:300px"></div></div>
-  <div class="chart-card"><h2>配速与心率</h2><div id="c2" style="height:300px"></div></div>
-  <div class="chart-card"><h2>睡眠时长与质量</h2><div id="c3" style="height:280px"></div></div>
-  <div class="chart-card"><h2>跑步地点分布</h2><div id="c4" style="height:340px"></div></div>
-
-  <div class="foot">数据来源 COROS · 源码 <a href="https://github.com/wangsiji/running-dashboard">github.com/wangsiji/running-dashboard</a></div>
+  <section class="grid">
+    <div class="card"><h2>累计距离</h2><div id="c-dist" class="chart"></div></div>
+    <div class="card"><h2>配速趋势</h2><div id="c-pace" class="chart"></div></div>
+    <div class="card"><h2>平均心率</h2><div id="c-hr" class="chart"></div></div>
+    <div class="card"><h2>睡眠</h2><div id="c-sleep" class="chart"></div></div>
+    <div class="card wide"><h2>路线坐标分布</h2><div id="c-geo" class="chart tall"></div></div>
+  </section>
 </div>
-
-<script>
-const DATA = {"labels": ["2026-09-15", "2026-09-16", "2026-09-17", "2026-09-18", "2026-09-20", "2026-09-21"], "dist": [7.15, 15.04, 12.03, 15.01, 5.63, 21.11], "pace": [5.9, 5.75, 5.73, 5.67, 6.35, 5.97], "hr": [147, 146, 150, 150, 145, 150], "dur": [42.2, 86.5, 69.0, 85.1, 35.8, 126.1], "sleepTotal": [225, 379, 417, 363, 382, 351], "sleepQuality": [41, 65, 70, 58, 78, 67], "geos": [{"value": [100.152, 25.674999], "name": "大理白族自治州", "d": 7.15}, {"value": [100.151001, 25.676001], "name": "E跑15公里", "d": 15.04}, {"value": [100.150002, 25.677], "name": "E跑15公里", "d": 12.03}, {"value": [100.151001, 25.676001], "name": "E跑15公里", "d": 15.01}, {"value": [100.151001, 25.676001], "name": "E跑25公里", "d": 5.63}, {"value": [100.153999, 25.674999], "name": "E跑半马", "d": 21.11}], "total": 75.97, "runs": 6, "bestPace": 5.67, "avgHr": 148, "avgKm": 12.7, "streak": 1};
-
-document.getElementById('updated').textContent = '更新于 ' + new Date().toLocaleString('zh-CN',{hour12:false}).slice(0,16);
-const set = (k,v)=>document.querySelector('[data-k="'+k+'"]').textContent = v;
-set('totalKm', DATA.total.toFixed(1));
-set('runs',    DATA.runs);
-set('bestPace', DATA.bestPace.toFixed(2));
-set('avgHr',   DATA.avgHr);
-set('avgKm',   DATA.avgKm.toFixed(1));
-set('streak',  DATA.streak);
-
-const labels = DATA.labels;
-function mk(id,opt){
-  const c = echarts.init(document.getElementById(id));
-  c.setOption(opt);
-  new ResizeObserver(()=>c.resize()).observe(document.getElementById(id));
-}
-const dark = {darkMode:true};
-const lineAxis = o=>({axisLine:{lineStyle:{color:'#3b4a63'}},axisLabel:{color:'#94a3b8'},splitLine:{lineStyle:{color:'#1e2b44'}},...o});
-
-// 1. 距离(bar) + 时长(line, 右轴)
-mk('c1',Object.assign({},dark,{
-  tooltip:{trigger:'axis'},legend:{textStyle:{color:'#cbd5e1'}},
-  grid:{left:48,right:56,top:40,bottom:30},
-  xAxis:{type:'category',data:labels,axisLabel:{color:'#94a3b8'}},
-  yAxis:[{type:'value',name:'km',nameTextStyle:{color:'#94a3b8'}},{type:'value',name:'min',inverse:false}],
-  series:[
-    {name:'距离(km)',type:'bar',data:DATA.dist,barWidth:'50%',itemStyle:{borderRadius:[6,6,0,0]}},
-    {name:'时长(min)',type:'line',yAxisIndex:1,data:DATA.dur,smooth:true,lineStyle:{width:2},symbolSize:6}
-  ]
-}));
-
-// 2. 配速(inverse y) + 心率(右轴)
-mk('c2',Object.assign({},dark,{
-  tooltip:{trigger:'axis'},legend:{textStyle:{color:'#cbd5e1'}},
-  grid:{left:48,right:56,top:40,bottom:30},
-  xAxis:{type:'category',data:labels,axisLabel:{color:'#94a3b8'}},
-  yAxis:[{type:'value',name:'配速 min/km',inverse:true},{type:'value',name:'bpm'}],
-  series:[
-    {name:'配速',type:'line',data:DATA.pace,smooth:true,lineStyle:{width:2},color:'#fb7185'},
-    {name:'心率',type:'line',yAxisIndex:1,data:DATA.hr,smooth:true,lineStyle:{width:2},color:'#a78bfa'}
-  ]
-}));
-
-// 3. 睡眠(min) + 质量分(右轴)
-mk('c3',Object.assign({},dark,{
-  tooltip:{trigger:'axis'},legend:{textStyle:{color:'#cbd5e1'}},
-  grid:{left:48,right:56,top:40,bottom:30},
-  xAxis:{type:'category',data:labels,axisLabel:{color:'#94a3b8'}},
-  yAxis:[{type:'value',name:'min'},{type:'value',name:'质量分',min:0,max:100}],
-  series:[
-    {type:'bar',name:'睡眠',data:DATA.sleepTotal,itemStyle:{borderRadius:[4,4,0,0]},color:'#2dd4bf'},
-    {type:'line',name:'质量',yAxisIndex:1,data:DATA.sleepQuality,smooth:true,color:'#fbbf24'}
-  ]
-}));
-
-// 4. 地理散点（放大到大理周边，固定点大小避免回调问题）
-mk('c4',Object.assign({},dark,{
-  tooltip:{trigger:'item',formatter:p=>{const d=p.data.value;return '<b>'+p.data.name+'</b><br/>'+p.data.d+' km'}},
-  grid:{left:56,right:30,top:30,bottom:40},
-  xAxis:{type:'value',name:'经度',min:100.14,max:100.16,splitLine:{lineStyle:{color:'#1e2b44'}}},
-  yAxis:{type:'value',name:'纬度',min:25.665,max:25.685,splitLine:{lineStyle:{color:'#1e2b44'}}},
-  series:[{
-    type:'scatter',data:DATA.geos,symbolSize:18,itemStyle:{color:'#38bdf8'},
-    label:{show:true,fontSize:11,position:'right',formatter:p=>p.data.name,color:'#cbd5e1'}
-  }]
-}));
-</script>
+<script>window.RUN_DATA = {"updated_at": "2026-09-21", "stats": {"total_km": 75.97, "total_runs": 6, "avg_pace": 5.89, "avg_hr": 148, "best_pace": 5.666666666666667}, "days": [{"date": "2026-09-15", "dist_km": 7.15, "pace": 5.9, "hr": 147, "bed_min": 0, "sleep_quality": 41, "lat": 25.674999, "lng": 100.152, "location": "大理白族自治州"}, {"date": "2026-09-16", "dist_km": 15.04, "pace": 5.75, "hr": 146, "bed_min": 0, "sleep_quality": 65, "lat": 25.676001, "lng": 100.151001, "location": "E跑15公里"}, {"date": "2026-09-17", "dist_km": 12.03, "pace": 5.733333333333333, "hr": 150, "bed_min": 0, "sleep_quality": 70, "lat": 25.677, "lng": 100.150002, "location": "E跑15公里"}, {"date": "2026-09-18", "dist_km": 15.01, "pace": 5.666666666666667, "hr": 150, "bed_min": 0, "sleep_quality": 58, "lat": 25.676001, "lng": 100.151001, "location": "E跑15公里"}, {"date": "2026-09-20", "dist_km": 5.63, "pace": 6.35, "hr": 145, "bed_min": 0, "sleep_quality": 78, "lat": 25.676001, "lng": 100.151001, "location": "E跑25公里"}, {"date": "2026-09-21", "dist_km": 21.11, "pace": 5.966666666666667, "hr": 150, "bed_min": 0, "sleep_quality": 67, "lat": 25.674999, "lng": 100.153999, "location": "E跑半马"}], "geo": [{"date": "2026-09-15", "lat": 25.674999, "lng": 100.152, "location": "大理白族自治州"}, {"date": "2026-09-16", "lat": 25.676001, "lng": 100.151001, "location": "E跑15公里"}, {"date": "2026-09-17", "lat": 25.677, "lng": 100.150002, "location": "E跑15公里"}, {"date": "2026-09-18", "lat": 25.676001, "lng": 100.151001, "location": "E跑15公里"}, {"date": "2026-09-20", "lat": 25.676001, "lng": 100.151001, "location": "E跑25公里"}, {"date": "2026-09-21", "lat": 25.674999, "lng": 100.153999, "location": "E跑半马"}], "weight": 70.7};</script>
+<script src="assets/app.js"></script>
 </body>
 </html>

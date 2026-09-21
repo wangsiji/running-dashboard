@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>思己 · 跑步数据</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <h1>思己 · 跑步数据</h1>
+    <div class="sub">累计趋势 · 七月半马挑战</div>
+  </div>
+  <div class="updated" id="updated"></div>
+
+  <section class="stats" id="stats"></section>
+
+  <section class="grid">
+    <div class="card"><h2>累计距离</h2><div id="c-dist" class="chart"></div></div>
+    <div class="card"><h2>配速趋势</h2><div id="c-pace" class="chart"></div></div>
+    <div class="card"><h2>平均心率</h2><div id="c-hr" class="chart"></div></div>
+    <div class="card"><h2>睡眠</h2><div id="c-sleep" class="chart"></div></div>
+    <div class="card wide"><h2>路线坐标分布</h2><div id="c-geo" class="chart tall"></div></div>
+  </section>
+</div>
+<script>window.RUN_DATA = __DATA__;</script>
+<script src="assets/app.js"></script>
+</body>
+</html>
