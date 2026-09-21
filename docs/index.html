@@ -1,0 +1,48 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>思己 · 跑步数据</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<style>
+body{font-family:-apple-system,'PingFang SC',system-ui,sans-serif;background:#f2f4f8;margin:0;color:#1f2430}
+.wrap{max-width:1000px;margin:0 auto;padding:24px}
+h1{font-size:20px;margin-bottom:2px} .sub{color:#8a93a6;margin-bottom:22px}
+h2{font-size:15px;color:#3a4152;margin:18px 0 8px}
+.chart{background:#fff;border-radius:14px;padding:14px;box-shadow:0 1px 6px rgba(20,30,70,.08)}
+</style></head><body><div class="wrap">
+<h1>🏃 思己 · 跑步数据</h1>
+<p class="sub">七日半马 · 每日距离 / 配速 / 心率 / 睡眠</p>
+<div class="chart" id="c1" style="height:300px"></div>
+<div class="chart" id="c2" style="height:300px"></div>
+<div class="chart" id="c3" style="height:300px"></div>
+<script>
+const LABELS=["2026-09-15", "2026-09-16", "2026-09-17", "2026-09-18", "2026-09-20", "2026-09-21"];
+const DIST=[7.15, 15.04, 12.03, 15.01, 5.63, 21.11];
+const PACE=[5.9, 5.75, 5.73, 5.67, 6.35, 5.97];
+const HR=[147, 146, 150, 150, 145, 150];
+const DUR=[42.2, 86.5, 69.0, 85.1, 35.8, 126.1];
+const SLPT=[225, 379, 417, 363, 382, 351];
+
+function mk(el,opt){echarts.init(document.getElementById(el)).setOption(opt)}
+const X={type:'category',data:LABELS};
+const base=X;
+
+mk('c1',{tooltip:{trigger:'axis'},legend:{},grid:{left:46,right:46,top:30,bottom:26},
+  xAxis:X,yAxis:[{type:'value',name:'km'},{type:'value',name:'分钟'}],
+  series:[
+    {name:'距离(km)',type:'bar',data:DIST,itemStyle:{color:'#3b82f6',borderRadius:[6,6,0,0]},
+      label:{show:true,position:'top',fontSize:11}},
+    {name:'时长(min)',type:'line',yAxisIndex:1,data:DUR,smooth:true,color:'#e67e22'}
+  ]});
+
+mk('c2',{tooltip:{trigger:'axis'},legend:{data:['配速(min/km)','心率(bpm)']},grid:{left:46,right:46,top:40,bottom:40},
+  xAxis:base,
+  yAxis:[{type:'value',name:'min/km',inverse:true},{type:'value',name:'bpm'}],
+  series:[
+    {name:'配速',type:'line',data:PACE,smooth:true,color:'#e11d48'},
+    {name:'心率',type:'line',yAxisIndex:1,data:HR,smooth:true,color:'#8e44ad'}
+  ]});
+
+mk('c3',{tooltip:{trigger:'axis'},legend:{},grid:{left:46,right:46,top:40,bottom:40},
+  xAxis:base,yAxis:{type:'value',name:'分钟'},
+  series:[{name:'睡眠(分钟)',type:'bar',data:SLPT,itemStyle:{color:'#1abc9c'}}]});
+</script></div></body></html>
