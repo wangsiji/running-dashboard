@@ -161,17 +161,15 @@ mk('c3',Object.assign({},dark,{
   ]
 }));
 
-// 4. 地理散点（符号大小/颜色按距离分段）
+// 4. 地理散点（放大到大理周边，固定点大小避免回调问题）
 mk('c4',Object.assign({},dark,{
-  tooltip:{formatter:p=>{const d=p.data;return '<b>'+d.name+'</b><br/>'+d.d+' km'}},
-  grid:{left:50,right:30,top:30,bottom:36},
-  xAxis:lineAxis({type:'value',name:'经度'}),yAxis:lineAxis({type:'value',name:'纬度'}),
+  tooltip:{trigger:'item',formatter:p=>{const d=p.data.value;return '<b>'+p.data.name+'</b><br/>'+p.data.d+' km'}},
+  grid:{left:56,right:30,top:30,bottom:40},
+  xAxis:{type:'value',name:'经度',min:100.14,max:100.16,splitLine:{lineStyle:{color:'#1e2b44'}}},
+  yAxis:{type:'value',name:'纬度',min:25.665,max:25.685,splitLine:{lineStyle:{color:'#1e2b44'}}},
   series:[{
-    type:'scatter',
-    data:DATA.geos,
-    symbolSize:p=>6+p.data.d*0.6,
-    itemStyle:{color:'#38bdf8'},
-    label:{show:true,fontSize:12,position:'right',formatter:p=>p.data.name,color:'#cbd5e1'}
+    type:'scatter',data:DATA.geos,symbolSize:18,itemStyle:{color:'#38bdf8'},
+    label:{show:true,fontSize:11,position:'right',formatter:p=>p.data.name,color:'#cbd5e1'}
   }]
 }));
 </script>
