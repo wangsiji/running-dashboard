@@ -6,4 +6,4 @@ offline:
 serve:
 	python3 -m http.server 8000 -d docs
 test:
-	python3 -m pipelines.test
+	python3 pipelines/test.py
