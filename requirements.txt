@@ -1,28 +1,18 @@
-httpx
-gpxpy==1.6.2
-appdirs>=1.4.0
-s2sphere
-geopy
-polyline
-sqlalchemy
-tzfpy; platform_system != "Windows"
-timezonefinder; platform_system == "Windows"
-pyyaml
+# 只列高驰链路实际 import 的依赖（用 AST 扫描 sync/ 得出）
 aiofiles
-cloudscraper==1.2.71
-tcxreader
-rich
-lxml
-eviltransform
-stravaweblib
-tenacity
-numpy
-tzlocal
-fit-tool
+colour
 garmin-fit-sdk
+geopy
+gpxpy==1.6.2
 haversine==2.8.0
-garth
-pycryptodome
-duckdb
-openai==1.88.0
+httpx
+lxml
+polyline
+pytz
+rich
+s2sphere
+sqlalchemy
+tcxreader
+timezonefinder; platform_system == "Windows"
+tzfpy; platform_system != "Windows"
 certifi==2025.1.31
