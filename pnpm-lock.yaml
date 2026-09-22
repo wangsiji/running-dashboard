@@ -19,7 +19,7 @@ dependencies:
     version: 8.1.0(@svgr/core@8.1.0)(typescript@6.0.3)
   '@vercel/analytics':
     specifier: ^2.0.1
-    version: 2.0.1(react@19.2.5)
+    version: 2.0.1(react@19.3.0)
   '@vitejs/plugin-react':
     specifier: ^6.0.1
     version: 6.0.1(vite@8.0.10)
@@ -34,28 +34,28 @@ dependencies:
     version: 3.23.0
   rc-virtual-list:
     specifier: ^3.19.2
-    version: 3.19.2(react-dom@19.2.5)(react@19.2.5)
+    version: 3.19.2(react-dom@19.2.5)(react@19.3.0)
   react:
-    specifier: ^19.2.5
-    version: 19.2.5
+    specifier: ^19.3.0
+    version: 19.3.0
   react-dom:
     specifier: ^19.2.5
-    version: 19.2.5(react@19.2.5)
+    version: 19.2.5(react@19.3.0)
   react-ga4:
     specifier: ^3.0.1
     version: 3.0.1
   react-helmet-async:
     specifier: ^3.0.0
-    version: 3.0.0(react@19.2.5)
+    version: 3.0.0(react@19.3.0)
   react-map-gl:
     specifier: ^8.1.1
-    version: 8.1.1(mapbox-gl@3.23.0)(react-dom@19.2.5)(react@19.2.5)
+    version: 8.1.1(mapbox-gl@3.23.0)(react-dom@19.2.5)(react@19.3.0)
   react-router-dom:
     specifier: ^7.14.2
-    version: 7.14.2(react-dom@19.2.5)(react@19.2.5)
+    version: 7.14.2(react-dom@19.2.5)(react@19.3.0)
   recharts:
     specifier: ^3.8.1
-    version: 3.8.1(@types/react@19.2.14)(react-dom@19.2.5)(react-is@19.2.5)(react@19.2.5)(redux@5.0.1)
+    version: 3.8.1(@types/react@19.3.0)(react-dom@19.2.5)(react-is@19.3.0)(react@19.3.0)(redux@5.0.1)
   vite:
     specifier: ^8.0.10
     version: 8.0.10(@types/node@25.6.0)
@@ -83,11 +83,11 @@ devDependencies:
     specifier: ^25.6.0
     version: 25.6.0
   '@types/react':
-    specifier: ^19.2.14
-    version: 19.2.14
+    specifier: ^19.3.0
+    version: 19.3.0
   '@types/react-dom':
     specifier: ^19.2.3
-    version: 19.2.3(@types/react@19.2.14)
+    version: 19.2.3(@types/react@19.3.0)
   '@typescript-eslint/eslint-plugin':
     specifier: ^8.59.1
     version: 8.63.0(@typescript-eslint/parser@8.63.0)(eslint@10.7.0)(typescript@6.0.3)
@@ -615,22 +615,23 @@ packages:
       - rollup
     dev: true
 
-  /@napi-rs/wasm-runtime@1.1.4(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0):
-    resolution: {integrity: sha512-3NQNNgA1YSlJb/kMH1ildASP9HW7/7kYnRI2szWJaofaS1hWmbGI4H+d3+22aGzXXN9IJ+n+GiFVcGipJP18ow==}
+  /@napi-rs/wasm-runtime@1.2.4(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0):
+    resolution: {integrity: sha512-AJxoUD2/15ESHbvpcyjU274nsAPLuOtPHCk0vKJM5pj//Fg/B1FXNWjPnXTT9PymCYYiHo4zPj0ZomXBKhoy7g==}
+    engines: {node: ^20.19.0 || ^22.13.0 || >=23.5.0}
     requiresBuild: true
     peerDependencies:
-      '@emnapi/core': ^1.7.1
-      '@emnapi/runtime': ^1.7.1
+      '@emnapi/core': ^1.7.1 || ^2.0.0-alpha.4
+      '@emnapi/runtime': ^1.7.1 || ^2.0.0-alpha.4
     dependencies:
       '@emnapi/core': 1.10.0
       '@emnapi/runtime': 1.10.0
-      '@tybys/wasm-util': 0.10.1
+      '@tybys/wasm-util': 0.10.4
     optional: true
 
   /@oxc-project/types@0.127.0:
     resolution: {integrity: sha512-aIYXQBo4lCbO4z0R3FHeucQHpF46l2LbMdxRvqvuRuW2OxdnSkcng5B8+K12spgLDj93rtN3+J2Vac/TIO+ciQ==}
 
-  /@reduxjs/toolkit@2.11.2(react-redux@9.2.0)(react@19.2.5):
+  /@reduxjs/toolkit@2.11.2(react-redux@9.2.0)(react@19.3.0):
     resolution: {integrity: sha512-Kd6kAHTA6/nUpp8mySPqj3en3dm0tdMIgbttnQ1xFMVpufoj+ADi8pXLBsd4xzTRHQa7t/Jv8W5UnCuW4kuWMQ==}
     peerDependencies:
       react: ^16.9.0 || ^17.0.0 || ^18 || ^19
@@ -644,8 +645,8 @@ packages:
       '@standard-schema/spec': 1.1.0
       '@standard-schema/utils': 0.3.0
       immer: 11.1.4
-      react: 19.2.5
-      react-redux: 9.2.0(@types/react@19.2.14)(react@19.2.5)(redux@5.0.1)
+      react: 19.3.0
+      react-redux: 9.2.0(@types/react@19.3.0)(react@19.3.0)(redux@5.0.1)
       redux: 5.0.1
       redux-thunk: 3.1.0(redux@5.0.1)
       reselect: 5.1.1
@@ -761,7 +762,7 @@ packages:
     dependencies:
       '@emnapi/core': 1.10.0
       '@emnapi/runtime': 1.10.0
-      '@napi-rs/wasm-runtime': 1.1.4(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
+      '@napi-rs/wasm-runtime': 1.2.4(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
     optional: true
 
   /@rolldown/binding-win32-arm64-msvc@1.0.0-rc.17:
@@ -1122,8 +1123,8 @@ packages:
       vite: 8.0.10(@types/node@25.6.0)
     dev: true
 
-  /@tybys/wasm-util@0.10.1:
-    resolution: {integrity: sha512-9tTaPJLSiejZKx+Bmog4uSubteqTvFrVrURwkmHixBo0G4seD0zUxp98E1DzUBJxLQ3NPwXrGKDiVjwx/DpPsg==}
+  /@tybys/wasm-util@0.10.4:
+    resolution: {integrity: sha512-W3c4gRigFS0T/Ma4qIYF3GDAc5AQdHb1yL5znJT1Zv1YaD9Kitx656wBjvr19qbiosmZT8lWDM5BEMynUqX65A==}
     requiresBuild: true
     dependencies:
       tslib: 2.8.1
@@ -1214,16 +1215,16 @@ packages:
     resolution: {integrity: sha512-j3pOPiEcWZ34R6a6mN07mUkM4o4Lwf6hPNt8eilOeZhTFbxFXmKhvXl9Y28jotFPaI1bpPDJsbCprUoNke6OrA==}
     dev: false
 
-  /@types/react-dom@19.2.3(@types/react@19.2.14):
+  /@types/react-dom@19.2.3(@types/react@19.3.0):
     resolution: {integrity: sha512-jp2L/eY6fn+KgVVQAOqYItbF0VY/YApe5Mz2F0aykSO8gx31bYCZyvSeYxCHKvzHG5eZjc+zyaS5BrBWya2+kQ==}
     peerDependencies:
       '@types/react': ^19.2.0
     dependencies:
-      '@types/react': 19.2.14
+      '@types/react': 19.3.0
     dev: true
 
-  /@types/react@19.2.14:
-    resolution: {integrity: sha512-ilcTH/UniCkMdtexkoCN0bI7pMcJDvmQFPvuPvmEaYA/NSfFTAgdUSLAoVjaRJm7+6PvcM+q1zYOwS4wTYMF9w==}
+  /@types/react@19.3.0:
+    resolution: {integrity: sha512-N0rFCuH9YoxG9/m61l9MfpJKfmLOVU0em7ipIz6TRgSSkvReLB9vL85GB+yr8Bs5leqpvg96JSwF4ZS1s4viQg==}
     dependencies:
       csstype: 3.2.3
 
@@ -1377,7 +1378,7 @@ packages:
       eslint-visitor-keys: 5.0.1
     dev: true
 
-  /@vercel/analytics@2.0.1(react@19.2.5):
+  /@vercel/analytics@2.0.1(react@19.3.0):
     resolution: {integrity: sha512-MTQG6V9qQrt1tsDeF+2Uoo5aPjqbVPys1xvnIftXSJYG2SrwXRHnqEvVoYID7BTruDz4lCd2Z7rM1BdkUehk2g==}
     peerDependencies:
       '@remix-run/react': ^2
@@ -1406,10 +1407,10 @@ packages:
       vue-router:
         optional: true
     dependencies:
-      react: 19.2.5
+      react: 19.3.0
     dev: false
 
-  /@vis.gl/react-mapbox@8.1.1(mapbox-gl@3.23.0)(react-dom@19.2.5)(react@19.2.5):
+  /@vis.gl/react-mapbox@8.1.1(mapbox-gl@3.23.0)(react-dom@19.2.5)(react@19.3.0):
     resolution: {integrity: sha512-KMDTjtWESXxHS4uqWxjsvgQUHvuL3Z6SdKe68o7Nxma2qUfuyH3x4TCkIqGn3FQTrFvZLWvTnSAbGvtm+Kd13A==}
     peerDependencies:
       mapbox-gl: '>=3.5.0'
@@ -1420,11 +1421,11 @@ packages:
         optional: true
     dependencies:
       mapbox-gl: 3.23.0
-      react: 19.2.5
-      react-dom: 19.2.5(react@19.2.5)
+      react: 19.3.0
+      react-dom: 19.2.5(react@19.3.0)
     dev: false
 
-  /@vis.gl/react-maplibre@8.1.1(react-dom@19.2.5)(react@19.2.5):
+  /@vis.gl/react-maplibre@8.1.1(react-dom@19.2.5)(react@19.3.0):
     resolution: {integrity: sha512-iUOfzJAhFAJwEZp1644tQb7LOTFgi5/GzdaztkhzNgFVuoF2Ez7guvwZjQAKB9CN2TlHTgNuYH8UW85kO7cVhw==}
     peerDependencies:
       maplibre-gl: '>=4.0.0'
@@ -1435,8 +1436,8 @@ packages:
         optional: true
     dependencies:
       '@maplibre/maplibre-gl-style-spec': 19.3.3
-      react: 19.2.5
-      react-dom: 19.2.5(react@19.2.5)
+      react: 19.3.0
+      react-dom: 19.2.5(react@19.3.0)
     dev: false
 
   /@vitejs/plugin-react@6.0.1(vite@8.0.10):
@@ -2959,7 +2960,7 @@ packages:
     resolution: {integrity: sha512-XdjUArbK4Bm5fLLvlm5KpTFOiOThgfWWI4axAZDWg4E/0mKdZyI9tNEfds27qCi1ze/vwTR16kvmmGhRra3c2g==}
     dev: false
 
-  /rc-resize-observer@1.4.3(react-dom@19.2.5)(react@19.2.5):
+  /rc-resize-observer@1.4.3(react-dom@19.2.5)(react@19.3.0):
     resolution: {integrity: sha512-YZLjUbyIWox8E9i9C3Tm7ia+W7euPItNWSPX5sCcQTYbnwDb5uNpnLHQCG1f22oZWUhLw4Mv2tFmeWe68CDQRQ==}
     peerDependencies:
       react: '>=16.9.0'
@@ -2967,25 +2968,25 @@ packages:
     dependencies:
       '@babel/runtime': 7.29.2
       classnames: 2.5.1
-      rc-util: 5.44.4(react-dom@19.2.5)(react@19.2.5)
-      react: 19.2.5
-      react-dom: 19.2.5(react@19.2.5)
+      rc-util: 5.44.4(react-dom@19.2.5)(react@19.3.0)
+      react: 19.3.0
+      react-dom: 19.2.5(react@19.3.0)
       resize-observer-polyfill: 1.5.1
     dev: false
 
-  /rc-util@5.44.4(react-dom@19.2.5)(react@19.2.5):
+  /rc-util@5.44.4(react-dom@19.2.5)(react@19.3.0):
     resolution: {integrity: sha512-resueRJzmHG9Q6rI/DfK6Kdv9/Lfls05vzMs1Sk3M2P+3cJa+MakaZyWY8IPfehVuhPJFKrIY1IK4GqbiaiY5w==}
     peerDependencies:
       react: '>=16.9.0'
       react-dom: '>=16.9.0'
     dependencies:
       '@babel/runtime': 7.29.2
-      react: 19.2.5
-      react-dom: 19.2.5(react@19.2.5)
+      react: 19.3.0
+      react-dom: 19.2.5(react@19.3.0)
       react-is: 18.3.1
     dev: false
 
-  /rc-virtual-list@3.19.2(react-dom@19.2.5)(react@19.2.5):
+  /rc-virtual-list@3.19.2(react-dom@19.2.5)(react@19.3.0):
     resolution: {integrity: sha512-Ys6NcjwGkuwkeaWBDqfI3xWuZ7rDiQXlH1o2zLfFzATfEgXcqpk8CkgMfbJD81McqjcJVez25a3kPxCR807evA==}
     engines: {node: '>=8.x'}
     peerDependencies:
@@ -2994,18 +2995,18 @@ packages:
     dependencies:
       '@babel/runtime': 7.29.2
       classnames: 2.5.1
-      rc-resize-observer: 1.4.3(react-dom@19.2.5)(react@19.2.5)
-      rc-util: 5.44.4(react-dom@19.2.5)(react@19.2.5)
-      react: 19.2.5
-      react-dom: 19.2.5(react@19.2.5)
+      rc-resize-observer: 1.4.3(react-dom@19.2.5)(react@19.3.0)
+      rc-util: 5.44.4(react-dom@19.2.5)(react@19.3.0)
+      react: 19.3.0
+      react-dom: 19.2.5(react@19.3.0)
     dev: false
 
-  /react-dom@19.2.5(react@19.2.5):
+  /react-dom@19.2.5(react@19.3.0):
     resolution: {integrity: sha512-J5bAZz+DXMMwW/wV3xzKke59Af6CHY7G4uYLN1OvBcKEsWOs4pQExj86BBKamxl/Ik5bx9whOrvBlSDfWzgSag==}
     peerDependencies:
       react: ^19.2.5
     dependencies:
-      react: 19.2.5
+      react: 19.3.0
       scheduler: 0.27.0
     dev: false
 
@@ -3017,13 +3018,13 @@ packages:
     resolution: {integrity: sha512-GyCc01bSheWXjzGDyHsXMOqk/SP5Cf/JrcJTg4hcpKx4eeSwaJKpJUc+ipF4ffLTZkmabmf3ZGBv4OKHTXNXyA==}
     dev: false
 
-  /react-helmet-async@3.0.0(react@19.2.5):
+  /react-helmet-async@3.0.0(react@19.3.0):
     resolution: {integrity: sha512-nA3IEZfXiclgrz4KLxAhqJqIfFDuvzQwlKwpdmzZIuC1KNSghDEIXmyU0TKtbM+NafnkICcwx8CECFrZ/sL/1w==}
     peerDependencies:
       react: ^16.6.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
     dependencies:
       invariant: 2.2.4
-      react: 19.2.5
+      react: 19.3.0
       react-fast-compare: 3.2.2
       shallowequal: 1.1.0
     dev: false
@@ -3032,11 +3033,11 @@ packages:
     resolution: {integrity: sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==}
     dev: false
 
-  /react-is@19.2.5:
-    resolution: {integrity: sha512-Dn0t8IQhCmeIT3wu+Apm1/YVsJXsGWi6k4sPdnBIdqMVtHtv0IGi6dcpNpNkNac0zB2uUAqNX3MHzN8c+z2rwQ==}
+  /react-is@19.3.0:
+    resolution: {integrity: sha512-UpMYezM4v5/18F28aC66AEsjXIgE02kyEMH6yLdgLXu/UTfa1Ntwck/nNLrbqJsEXW7gPb0coNO9FQse9WTovA==}
     dev: false
 
-  /react-map-gl@8.1.1(mapbox-gl@3.23.0)(react-dom@19.2.5)(react@19.2.5):
+  /react-map-gl@8.1.1(mapbox-gl@3.23.0)(react-dom@19.2.5)(react@19.3.0):
     resolution: {integrity: sha512-aSqFAFoxvY7wxbGI93Dz0E41171mkAb3GcNbnkFIotmu88OFw495os6mIDZSi7irYNT/PZEIOEHUxhun4ToGuQ==}
     peerDependencies:
       mapbox-gl: '>=1.13.0'
@@ -3049,14 +3050,14 @@ packages:
       maplibre-gl:
         optional: true
     dependencies:
-      '@vis.gl/react-mapbox': 8.1.1(mapbox-gl@3.23.0)(react-dom@19.2.5)(react@19.2.5)
-      '@vis.gl/react-maplibre': 8.1.1(react-dom@19.2.5)(react@19.2.5)
+      '@vis.gl/react-mapbox': 8.1.1(mapbox-gl@3.23.0)(react-dom@19.2.5)(react@19.3.0)
+      '@vis.gl/react-maplibre': 8.1.1(react-dom@19.2.5)(react@19.3.0)
       mapbox-gl: 3.23.0
-      react: 19.2.5
-      react-dom: 19.2.5(react@19.2.5)
+      react: 19.3.0
+      react-dom: 19.2.5(react@19.3.0)
     dev: false
 
-  /react-redux@9.2.0(@types/react@19.2.14)(react@19.2.5)(redux@5.0.1):
+  /react-redux@9.2.0(@types/react@19.3.0)(react@19.3.0)(redux@5.0.1):
     resolution: {integrity: sha512-ROY9fvHhwOD9ySfrF0wmvu//bKCQ6AeZZq1nJNtbDC+kk5DuSuNX/n6YWYF/SYy7bSba4D4FSz8DJeKY/S/r+g==}
     peerDependencies:
       '@types/react': ^18.2.25 || ^19
@@ -3068,26 +3069,26 @@ packages:
       redux:
         optional: true
     dependencies:
-      '@types/react': 19.2.14
+      '@types/react': 19.3.0
       '@types/use-sync-external-store': 0.0.6
-      react: 19.2.5
+      react: 19.3.0
       redux: 5.0.1
-      use-sync-external-store: 1.6.0(react@19.2.5)
+      use-sync-external-store: 1.6.0(react@19.3.0)
     dev: false
 
-  /react-router-dom@7.14.2(react-dom@19.2.5)(react@19.2.5):
+  /react-router-dom@7.14.2(react-dom@19.2.5)(react@19.3.0):
     resolution: {integrity: sha512-YZcM5ES8jJSM+KrJ9BdvHHqlnGTg5tH3sC5ChFRj4inosKctdyzBDhOyyHdGk597q2OT6NTrCA1OvB/YDwfekQ==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
     dependencies:
-      react: 19.2.5
-      react-dom: 19.2.5(react@19.2.5)
-      react-router: 7.14.2(react-dom@19.2.5)(react@19.2.5)
+      react: 19.3.0
+      react-dom: 19.2.5(react@19.3.0)
+      react-router: 7.14.2(react-dom@19.2.5)(react@19.3.0)
     dev: false
 
-  /react-router@7.14.2(react-dom@19.2.5)(react@19.2.5):
+  /react-router@7.14.2(react-dom@19.2.5)(react@19.3.0):
     resolution: {integrity: sha512-yCqNne6I8IB6rVCH7XUvlBK7/QKyqypBFGv+8dj4QBFJiiRX+FG7/nkdAvGElyvVZ/HQP5N19wzteuTARXi5Gw==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
@@ -3098,13 +3099,13 @@ packages:
         optional: true
     dependencies:
       cookie: 1.1.1
-      react: 19.2.5
-      react-dom: 19.2.5(react@19.2.5)
+      react: 19.3.0
+      react-dom: 19.2.5(react@19.3.0)
       set-cookie-parser: 2.7.2
     dev: false
 
-  /react@19.2.5:
-    resolution: {integrity: sha512-llUJLzz1zTUBrskt2pwZgLq59AemifIftw4aB7JxOqf1HY2FDaGDxgwpAPVzHU1kdWabH7FauP4i1oEeer2WCA==}
+  /react@19.3.0:
+    resolution: {integrity: sha512-E8LUcbtBWt20bbl2YoHfx4ZDBdxVTfOKtCZn9cDSJ4l6/nuoApcpIBcj47t2wZoVX8g2ZHuMHbiShgCR1T5Sog==}
     engines: {node: '>=0.10.0'}
     dev: false
 
@@ -3127,7 +3128,7 @@ packages:
       type-fest: 0.6.0
     dev: false
 
-  /recharts@3.8.1(@types/react@19.2.14)(react-dom@19.2.5)(react-is@19.2.5)(react@19.2.5)(redux@5.0.1):
+  /recharts@3.8.1(@types/react@19.3.0)(react-dom@19.2.5)(react-is@19.3.0)(react@19.3.0)(redux@5.0.1):
     resolution: {integrity: sha512-mwzmO1s9sFL0TduUpwndxCUNoXsBw3u3E/0+A+cLcrSfQitSG62L32N69GhqUrrT5qKcAE3pCGVINC6pqkBBQg==}
     engines: {node: '>=18'}
     peerDependencies:
@@ -3135,19 +3136,19 @@ packages:
       react-dom: ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react-is: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
     dependencies:
-      '@reduxjs/toolkit': 2.11.2(react-redux@9.2.0)(react@19.2.5)
+      '@reduxjs/toolkit': 2.11.2(react-redux@9.2.0)(react@19.3.0)
       clsx: 2.1.1
       decimal.js-light: 2.5.1
       es-toolkit: 1.46.1
       eventemitter3: 5.0.4
       immer: 10.2.0
-      react: 19.2.5
-      react-dom: 19.2.5(react@19.2.5)
-      react-is: 19.2.5
-      react-redux: 9.2.0(@types/react@19.2.14)(react@19.2.5)(redux@5.0.1)
+      react: 19.3.0
+      react-dom: 19.2.5(react@19.3.0)
+      react-is: 19.3.0
+      react-redux: 9.2.0(@types/react@19.3.0)(react@19.3.0)(redux@5.0.1)
       reselect: 5.1.1
       tiny-invariant: 1.3.3
-      use-sync-external-store: 1.6.0(react@19.2.5)
+      use-sync-external-store: 1.6.0(react@19.3.0)
       victory-vendor: 37.3.6
     transitivePeerDependencies:
       - '@types/react'
@@ -3511,12 +3512,12 @@ packages:
       punycode: 2.3.1
     dev: true
 
-  /use-sync-external-store@1.6.0(react@19.2.5):
+  /use-sync-external-store@1.6.0(react@19.3.0):
     resolution: {integrity: sha512-Pp6GSwGP/NrPIrxVFAIkOQeyw8lFenOHijQWkUTrDvrF4ALqylP2C/KCkeS9dpUM3KvYRQhna5vt7IL95+ZQ9w==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
     dependencies:
-      react: 19.2.5
+      react: 19.3.0
     dev: false
 
   /validate-npm-package-license@3.0.4:
