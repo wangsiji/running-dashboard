@@ -25,3 +25,7 @@ route.png
 route.svg
 
 .env
+
+# Python 工具缓存
+.ruff_cache/
+__pycache__/
