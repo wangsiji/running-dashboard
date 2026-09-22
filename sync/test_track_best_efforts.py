@@ -16,21 +16,23 @@ def demo():
     assert set(e) == {"5k", "10k", "half", "marathon"}, e
     for k, _ in BEST_EFFORT_TARGETS:
         pass
-    assert 1480 < e["5k"] < 1520, e["5k"]            # 5km ≈ 1500s
-    assert 2980 < e["10k"] < 3020, e["10k"]          # 10km ≈ 3000s
+    assert 1480 < e["5k"] < 1520, e["5k"]  # 5km ≈ 1500s
+    assert 2980 < e["10k"] < 3020, e["10k"]  # 10km ≈ 3000s
     assert e["half"] > e["10k"], e
     assert e["marathon"] > e["half"], e
     # 半马 ≈ 21097m / 100m 每点 @30s → ~6329s
     assert 6290 < e["half"] < 6370, e["half"]
 
     # 变速：前半慢后半快 → 最好分段必须比匀速快
-    slow = synt(211, 360)                                     # 21.0km @ 6:00/km
+    slow = synt(211, 360)  # 21.0km @ 6:00/km
     off = slow[-1][0]
-    fast = [(off + t, slow[-1][1] + d) for t, d in
-            [(i * 18, i * 100.0) for i in range(1, 211)]]     # 后半 @ 3:00/km
+    fast = [
+        (off + t, slow[-1][1] + d)
+        for t, d in [(i * 18, i * 100.0) for i in range(1, 211)]
+    ]  # 后半 @ 3:00/km
     e2 = best_efforts(slow + fast)
-    assert e2["half"] < e["half"], (e2["half"], e["half"])    # 快段的半马更快
-    assert e2["half"] < 3900, e2["half"]                      # < 65min，取自快段
+    assert e2["half"] < e["half"], (e2["half"], e["half"])  # 快段的半马更快
+    assert e2["half"] < 3900, e2["half"]  # < 65min，取自快段
 
     # 短距离：不到 5km 的活动不给任何档
     assert best_efforts(synt(30, 300)) == {}
