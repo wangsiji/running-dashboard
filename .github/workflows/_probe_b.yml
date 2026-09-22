@@ -1,0 +1,5 @@
+name: Probe B
+on: workflow_dispatch
+jobs:
+  call:
+    uses: ./.github/workflows/gh-pages.yml

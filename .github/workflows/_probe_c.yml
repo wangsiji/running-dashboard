@@ -1,0 +1,12 @@
+name: Probe C
+on: workflow_dispatch
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo C ok
+  call:
+    if: needs.sync.result == 'success'
+    uses: ./.github/workflows/gh-pages.yml
+    needs:
+      - sync
