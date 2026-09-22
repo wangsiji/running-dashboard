@@ -3,6 +3,19 @@ name: Publish GitHub Pages
 on:
   workflow_dispatch:
   workflow_call:
+  # 站点源码变动立即发布；data/** 不在列表里 —— 那个由每日同步主动调用本工作流
+  push:
+    branches: [master]
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - 'index.html'
+      - 'config.yml'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'vite.config.ts'
+      - 'tsconfig.json'
+      - '.github/workflows/gh-pages.yml'
 
 # Allow one concurrent deployment
 concurrency:
