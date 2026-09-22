@@ -11,9 +11,6 @@ on:
       - 'requirements.txt'
       - '.github/workflows/run_data_sync.yml'
 
-permissions:
-  contents: write
-
 env:
   ATHLETE: wangsiji
   TITLE: 思己 · Running
@@ -25,6 +22,8 @@ env:
 jobs:
   sync:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # 需要回推数据；只能放在作业级
     steps:
       - uses: actions/checkout@v4
         with:
