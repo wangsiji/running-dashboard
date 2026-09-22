@@ -1,0 +1,13 @@
+name: Probe3
+on:
+  workflow_call:
+    inputs:
+      x:
+        required: true
+        type: boolean
+        default: false
+jobs:
+  a:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo ok
