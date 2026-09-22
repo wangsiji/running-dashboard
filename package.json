@@ -29,7 +29,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "data:clean": "rm -rf data/activities.db data/activities.json data/imported.json data/fit/* data/gpx/* data/tcx/*",
+    "data:clean": "rm -rf data/activities.db data/activities.json data/imported.json data/fit/* data/gpx/*",
     "build": "vite build",
     "develop": "vite dev",
     "dev": "vite dev",

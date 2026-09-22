@@ -1,6 +1,5 @@
 # 只列高驰链路实际 import 的依赖（用 AST 扫描 sync/ 得出）
 aiofiles
-colour
 garmin-fit-sdk
 geopy
 gpxpy==1.6.2
@@ -12,7 +11,6 @@ pytz
 rich
 s2sphere
 sqlalchemy
-tcxreader
 timezonefinder; platform_system == "Windows"
 tzfpy; platform_system != "Windows"
 certifi==2025.1.31

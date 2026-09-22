@@ -33,16 +33,6 @@ def load_gpx_file(file_name, activity_title_dict=None):
     return t
 
 
-def load_tcx_file(file_name, activity_title_dict=None):
-    """Load an individual TCX file as a track by using Track.load_tcx()"""
-    t = Track()
-    t.load_tcx(file_name)
-    file_id = os.path.basename(file_name).split(".")[0]
-    if activity_title_dict:
-        t.track_name = activity_title_dict.get(file_id, t.track_name)
-    return t
-
-
 def load_fit_file(file_name, activity_title_dict=None):
     """Load an individual FIT file as a track by using Track.load_fit()"""
     t = Track()
@@ -70,7 +60,6 @@ class TrackLoader:
         self.year_range = YearRange()
         self.load_func_dict = {
             "gpx": load_gpx_file,
-            "tcx": load_tcx_file,
             "fit": load_fit_file,
         }
 
@@ -135,9 +124,6 @@ class TrackLoader:
     def _load_data_tracks(
         file_names, load_func=load_gpx_file, activity_title_dict=None
     ):
-        """
-        TODO refactor with _load_tcx_tracks
-        """
         tracks = {}
         with concurrent.futures.ProcessPoolExecutor() as executor:
             future_to_file_name = {

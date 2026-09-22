@@ -1,6 +1,7 @@
+import os
 import sys
 
-sys.path.insert(0, "/tmp/running_page/sync")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from tracks.track import BEST_EFFORT_TARGETS, best_efforts
 

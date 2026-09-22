@@ -19,7 +19,6 @@ COROS_URL_DICT = {
 COROS_TYPE_DICT = {
     "gpx": 1,
     "fit": 4,
-    "tcx": 3,
 }
 
 
@@ -195,14 +194,6 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
-        "--tcx",
-        dest="download_file_type",
-        action="store_const",
-        const="tcx",
-        default="fit",
-        help="to download personal documents or ebook",
-    )
-    parser.add_argument(
         "--gpx",
         dest="download_file_type",
         action="store_const",
@@ -216,7 +207,7 @@ if __name__ == "__main__":
     password = options.password
     is_only_running = options.only_run
     file_type = options.download_file_type
-    file_type = file_type if file_type in ["gpx", "tcx", "fit"] else "fit"
+    file_type = file_type if file_type in ["gpx", "fit"] else "fit"
     encrypted_pwd = hashlib.md5(password.encode()).hexdigest()
 
     asyncio.run(

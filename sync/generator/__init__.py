@@ -1,9 +1,9 @@
 import datetime
-import math
 import os
 import sys
 
 import polyline as polyline_codec
+from haversine import Unit, haversine
 from polyline_processor import filter_out
 from synced_data_file_logger import save_synced_data_file_list
 from tracks import track_loader
@@ -24,19 +24,6 @@ INDOOR_SPREAD_THRESHOLD = float(os.getenv("INDOOR_SPREAD_THRESHOLD", "0.002"))
 _LOOP_CLOSE_THRESHOLD = 0.003  # ~330m
 
 
-def _haversine(lat1, lon1, lat2, lon2):
-    """Return distance in metres between two WGS-84 points."""
-    R = 6_371_000
-    rlat1, rlat2 = math.radians(lat1), math.radians(lat2)
-    dlat = math.radians(lat2 - lat1)
-    dlon = math.radians(lon2 - lon1)
-    a = (
-        math.sin(dlat / 2) ** 2
-        + math.cos(rlat1) * math.cos(rlat2) * math.sin(dlon / 2) ** 2
-    )
-    return R * 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-
-
 def _interpolate(p1, p2, frac):
     """Linearly interpolate between two (lat, lng) points."""
     return (p1[0] + (p2[0] - p1[0]) * frac, p1[1] + (p2[1] - p1[1]) * frac)
@@ -46,9 +33,7 @@ def _route_length_m(coords):
     """Total length of a polyline in metres."""
     total = 0.0
     for i in range(len(coords) - 1):
-        total += _haversine(
-            coords[i][0], coords[i][1], coords[i + 1][0], coords[i + 1][1]
-        )
+        total += haversine(coords[i], coords[i + 1], unit=Unit.METERS)
     return total
 
 
@@ -102,7 +87,7 @@ def _build_route_for_distance(ref_coords, target_m):
     prev = next(it)  # first point (already in result)
 
     for pt in it:
-        seg = _haversine(prev[0], prev[1], pt[0], pt[1])
+        seg = haversine(prev, pt, unit=Unit.METERS)
         if seg < 0.01:
             prev = pt
             continue

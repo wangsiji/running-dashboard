@@ -21,16 +21,14 @@ PLACES_FILE = os.path.join(DATA_DIR, "places.json")  # 坐标(~100m网格) → �
 # ---- 轨迹原始文件 ----
 FIT_FOLDER = os.path.join(DATA_DIR, "fit")
 GPX_FOLDER = os.path.join(DATA_DIR, "gpx")
-TCX_FOLDER = os.path.join(DATA_DIR, "tcx")
 
 FOLDER_DICT = {
     "gpx": GPX_FOLDER,
-    "tcx": TCX_FOLDER,
     "fit": FIT_FOLDER,
 }
 
 # 目录不存在会让 os.listdir 直接抛错，这里统一建好
-for _folder in (DATA_DIR, FIT_FOLDER, GPX_FOLDER, TCX_FOLDER):
+for _folder in (DATA_DIR, FIT_FOLDER, GPX_FOLDER):
     os.makedirs(_folder, exist_ok=True)
 
 BASE_TIMEZONE = "Asia/Shanghai"

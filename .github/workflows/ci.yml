@@ -36,6 +36,10 @@ jobs:
       - name: Smoke test - GPX 解析链路
         run: python sync/gpx.py
 
+      - name: Unit checks
+        run: |
+          for t in sync/test_*.py; do python "$t"; done
+
       - name: Check formatting (black)
         run: black . --diff --color && black . --check
 
