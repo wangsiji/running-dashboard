@@ -1,0 +1,14 @@
+name: Probe D
+on: workflow_dispatch
+permissions:
+  contents: write
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo D ok
+  call:
+    if: needs.sync.result == 'success'
+    uses: ./.github/workflows/gh-pages.yml
+    needs:
+      - sync

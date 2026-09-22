@@ -1,0 +1,19 @@
+name: Probe F
+on:
+  schedule:
+    - cron: '0 3 * * *' # 北京时间每天 11:00
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths:
+      - 'sync/**'
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo F ok
+  call:
+    if: needs.sync.result == 'success'
+    uses: ./.github/workflows/gh-pages.yml
+    needs:
+      - sync

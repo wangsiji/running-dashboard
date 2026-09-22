@@ -1,0 +1,16 @@
+name: Probe E
+on: workflow_dispatch
+env:
+  ATHLETE: wangsiji
+  TITLE: 思己 · Running
+  IGNORE_POLYLINE: 'ktjrFoemeU~IorGq}DeB'
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo E ok
+  call:
+    if: needs.sync.result == 'success'
+    uses: ./.github/workflows/gh-pages.yml
+    needs:
+      - sync
