@@ -85,7 +85,18 @@ class Coros:
                 break
             if page_number == 1:
                 import json as _json
-                print("DEBUG-FIELDS:", _json.dumps(activities[0], ensure_ascii=False)[:900])
+                a0 = activities[0]
+                print("DEBUG-KEYS:", ",".join(sorted(a0.keys())))
+                print("DEBUG-VALS:", _json.dumps({k: v for k, v in a0.items() if any(t in k.lower() for t in ("best","name","loc","addr","city","place","prov","country","image","dist"))}, ensure_ascii=False)[:900])
+                for u in ("https://teamcnapi.coros.com/activity/detail?labelId=%s&sportType=%s" % (a0["labelId"], a0["sportType"]),
+                          "https://teamcnapi.coros.com/activity/detail/query?labelId=%s&sportType=%s" % (a0["labelId"], a0["sportType"])):
+                    try:
+                        r = await self.req.get(u)
+                        j = r.json()
+                        d = j.get("data") or {}
+                        print("DEBUG-DETAIL", r.status_code, u.split("/activity/")[1][:22], "keys:", ",".join(sorted(d.keys()))[:400] if isinstance(d, dict) else str(d)[:200])
+                    except Exception as e:
+                        print("DEBUG-DETAIL ERR", type(e).__name__, str(e)[:120])
             for activity in activities:
                 label_id = activity["labelId"]
                 sport_type = activity["sportType"]
