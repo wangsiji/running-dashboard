@@ -1,5 +1,5 @@
-import type { Activity } from '../types';
-import { parseMovingTime } from '../hooks/useActivities';
+import type { Activity } from '../core/types';
+import { parseMovingTime } from '../core/hooks/useActivities';
 
 export type SummaryPeriod = 'year' | 'month' | 'week' | 'day' | 'life';
 

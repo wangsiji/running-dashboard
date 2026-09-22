@@ -2,14 +2,14 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { exportCard } from '../utils/exportCard';
 import { RouteMap } from './RouteMap';
 import * as polyline from '@mapbox/polyline';
-import type { Activity } from '../types';
+import type { Activity } from '../core/types';
 import {
   getAvailableYears,
   formatDistance,
   parseMovingTime,
   formatPace,
-} from '../hooks/useActivities';
-import { useLocale } from '../hooks/useLocale';
+} from '../core/hooks/useActivities';
+import { useLocale } from '../core/hooks/useLocale';
 
 type SportType = 'Run';
 const trackPlaceholders = Array.from({ length: 40 }, (_, id) => ({

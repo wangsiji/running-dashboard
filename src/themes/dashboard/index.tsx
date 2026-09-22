@@ -8,15 +8,15 @@ import {
   useRef,
   useState,
 } from 'react';
-import type { Activity } from '@/types';
+import type { Activity } from '@/core/types';
 import {
   useFilteredActivities,
   getAvailableYears,
   extractProvince,
   getActivityData,
-} from '@/hooks/useActivities';
-import { useTheme } from '@/hooks/useTheme';
-import { useLocale } from '@/hooks/useLocale';
+} from '@/core/hooks/useActivities';
+import { useTheme } from '@/core/theme';
+import { useLocale } from '@/core/hooks/useLocale';
 import { Header } from '@/components/Header';
 import { StatsCards } from '@/components/StatsCards';
 import { ContributionHeatmap } from '@/components/ContributionHeatmap';

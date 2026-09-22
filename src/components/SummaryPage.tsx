@@ -8,9 +8,9 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import type { Activity } from '../types';
-import { useLocale } from '../hooks/useLocale';
-import { formatPace } from '../hooks/useActivities';
+import type { Activity } from '../core/types';
+import { useLocale } from '../core/hooks/useLocale';
+import { formatPace } from '../core/hooks/useActivities';
 import {
   groupSummary,
   summaryKey,

@@ -1,5 +1,5 @@
-import type { Activity } from '../types';
-import { useLocale } from '../hooks/useLocale';
+import type { Activity } from '../core/types';
+import { useLocale } from '../core/hooks/useLocale';
 
 type Page = 'home' | 'tracks' | 'summary';
 

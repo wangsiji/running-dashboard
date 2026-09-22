@@ -1,8 +1,8 @@
 import { memo, useState } from 'react';
-import type { Activity, SportFilter } from '../types';
-import { formatDistance, parseMovingTime } from '../hooks/useActivities';
-import { useLocale } from '../hooks/useLocale';
-import { GOALS, DEFAULT_GOAL } from '../config';
+import type { Activity, SportFilter } from '../core/types';
+import { formatDistance, parseMovingTime } from '../core/hooks/useActivities';
+import { useLocale } from '../core/hooks/useLocale';
+import { GOALS, DEFAULT_GOAL } from '../core/config';
 
 interface StatsCardsProps {
   activities: Activity[];

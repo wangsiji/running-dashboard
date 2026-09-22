@@ -11,24 +11,27 @@
 ```
 ├── sync/          ① 数据同步（Python）
 │   ├── coros.py       高驰拉取入口
-│   ├── gpx.py         本地 GPX 导入入口
+│   ├── gpx.py         本地轨迹导入入口
 │   ├── config.py      所有数据路径的唯一定义处  ← 找路径看这里
 │   ├── utils.py       运动类型映射、合并成 activities.json
-│   ├── polyline_processor.py  轨迹裁剪（IGNORE_* 环境变量）
+│   ├── polyline_processor.py     轨迹裁剪（IGNORE_* 环境变量）
+│   ├── synced_data_file_logger.py 已下载 id 的记录
 │   ├── generator/     轨迹落库 + 生成站点数据
-│   └── gpxtrackposter/ 轨迹解析（gpx/fit）
+│   └── tracks/        轨迹模型与解析（gpx / fit）
 │
 ├── data/          ② 全部数据（生成物，随仓库提交）
 │   ├── activities.json    站点数据源（前端唯一读这个）
 │   ├── activities.db      活动库 (sqlite)
 │   ├── imported.json      已同步记录
-│   ├── fit/  gpx/  tcx/   轨迹原始文件
+│   └── fit/  gpx/  tcx/   轨迹原始文件（高驰只用 fit/）
 │
 ├── src/           ③ 前端源码（Vite + React + TS）
-│   ├── core/          数据加载、配置、hooks
+│   ├── core/          config / types / i18n / theme + hooks（数据加载）
 │   ├── components/    页面组件（图表、地图、轨迹墙…）
 │   ├── themes/dashboard/  页面主题
-│   └── static/        纯静态资源（地图 geojson、站点元信息）
+│   ├── assets/        地图 geojson
+│   ├── utils/         汇总计算、导出卡片
+│   └── workers/       轨迹聚类 worker
 │
 ├── config.yml     ④ 站点配置（标题、主题、单位）
 ├── public/        ⑤ 不参与打包的静态文件

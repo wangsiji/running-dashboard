@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import type { RouteMapProps } from './RouteMapCanvas';
-import { useLocale } from '../hooks/useLocale';
+import { useLocale } from '../core/hooks/useLocale';
 
 const MapCanvas = lazy(() =>
   import('./RouteMapCanvas').then((module) => ({

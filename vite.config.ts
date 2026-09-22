@@ -90,8 +90,6 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
       '@data': path.resolve(__dirname, './data'),
       '@config': path.resolve(__dirname, 'config.yml'),
-      '@core': path.resolve(__dirname, './src/core'),
-      '@themes': path.resolve(__dirname, './src/themes'),
     },
   },
   build: {

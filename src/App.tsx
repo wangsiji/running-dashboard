@@ -4,8 +4,8 @@ import {
   type ComponentType,
   type LazyExoticComponent,
 } from 'react';
-import { LocaleProvider, useLocale } from './hooks/useLocale';
-import { THEME_PRESET } from './config';
+import { LocaleProvider, useLocale } from './core/hooks/useLocale';
+import { THEME_PRESET } from './core/config';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { ThemeProvider } from './core/theme';
 

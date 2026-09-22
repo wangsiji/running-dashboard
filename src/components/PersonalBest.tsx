@@ -1,7 +1,7 @@
 import { memo } from 'react';
-import type { Activity } from '../types';
-import { useLocale } from '../hooks/useLocale';
-import { parseMovingTime } from '../hooks/useActivities';
+import type { Activity } from '../core/types';
+import { useLocale } from '../core/hooks/useLocale';
+import { parseMovingTime } from '../core/hooks/useActivities';
 
 interface PersonalBestProps {
   activities: Activity[];

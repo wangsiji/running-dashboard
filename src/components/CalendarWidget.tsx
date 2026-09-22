@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
-import type { Activity } from '../types';
-import { formatDistance } from '../hooks/useActivities';
-import { useLocale } from '../hooks/useLocale';
+import type { Activity } from '../core/types';
+import { formatDistance } from '../core/hooks/useActivities';
+import { useLocale } from '../core/hooks/useLocale';
 
 interface CalendarWidgetProps {
   activities: Activity[];

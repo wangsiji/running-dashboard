@@ -1,12 +1,12 @@
 import { memo } from 'react';
-import type { Activity, SportFilter } from '../types';
-import { useLocale } from '../hooks/useLocale';
+import type { Activity, SportFilter } from '../core/types';
+import { useLocale } from '../core/hooks/useLocale';
 import {
   formatDistance,
   parseMovingTime,
   extractProvince,
-} from '../hooks/useActivities';
-import { AVATAR } from '../config';
+} from '../core/hooks/useActivities';
+import { AVATAR } from '../core/config';
 
 interface ProfileCardProps {
   activities: Activity[];

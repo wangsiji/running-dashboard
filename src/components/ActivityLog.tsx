@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
-import type { Activity, SportFilter } from '../types';
-import { formatDuration, formatPace } from '../hooks/useActivities';
-import { useLocale } from '../hooks/useLocale';
+import type { Activity, SportFilter } from '../core/types';
+import { formatDuration, formatPace } from '../core/hooks/useActivities';
+import { useLocale } from '../core/hooks/useLocale';
 
 interface ActivityLogProps {
   activities: Activity[];

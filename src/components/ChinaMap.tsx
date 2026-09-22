@@ -1,7 +1,7 @@
 import { memo, useEffect, useMemo, useState } from 'react';
-import type { Activity, SportFilter } from '../types';
-import { useLocale } from '../hooks/useLocale';
-import { extractProvince } from '../hooks/useActivities';
+import type { Activity, SportFilter } from '../core/types';
+import { useLocale } from '../core/hooks/useLocale';
+import { extractProvince } from '../core/hooks/useActivities';
 
 interface ChinaMapProps {
   activities: Activity[];

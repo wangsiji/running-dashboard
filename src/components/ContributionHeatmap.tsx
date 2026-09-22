@@ -1,13 +1,13 @@
 import { memo, useMemo, useRef, useState } from 'react';
 import { exportCard } from '../utils/exportCard';
-import type { Activity, SportFilter } from '../types';
+import type { Activity, SportFilter } from '../core/types';
 import {
   getAvailableYears,
   formatDistance,
   parseMovingTime,
   formatPace,
-} from '../hooks/useActivities';
-import { useLocale } from '../hooks/useLocale';
+} from '../core/hooks/useActivities';
+import { useLocale } from '../core/hooks/useLocale';
 
 const MAX_VISIBLE_YEARS = 10;
 const weekdayIds = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];

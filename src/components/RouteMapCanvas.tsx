@@ -2,9 +2,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import * as polyline from '@mapbox/polyline';
-import type { Activity } from '../types';
-import { MAPBOX_TOKEN } from '../config';
-import { useLocale } from '../hooks/useLocale';
+import type { Activity } from '../core/types';
+import { MAPBOX_TOKEN } from '../core/config';
+import { useLocale } from '../core/hooks/useLocale';
 import './RouteMap.css';
 
 export interface RouteMapProps {

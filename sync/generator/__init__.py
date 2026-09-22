@@ -4,9 +4,9 @@ import os
 import sys
 
 import polyline as polyline_codec
-from gpxtrackposter import track_loader
 from polyline_processor import filter_out
 from synced_data_file_logger import save_synced_data_file_list
+from tracks import track_loader
 
 from .db import Activity, init_db, update_or_create_activity
 

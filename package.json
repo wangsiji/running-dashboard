@@ -36,7 +36,7 @@
     "serve": "vite serve",
     "preview": "vite preview",
     "lint": "eslint src --ext .ts,.tsx --fix",
-    "check": "prettier --check \"src/main.tsx\" \"src/**/*.{css,module.css,json,ts,tsx}\" \"*.{yaml,json,ts}\" \"eslint.config.mjs\"",
+    "check": "tsc --noEmit && prettier --check \"src/main.tsx\" \"src/**/*.{css,module.css,json,ts,tsx}\" \"*.{yaml,json,ts}\" \"eslint.config.mjs\"",
     "format": "prettier --write \"src/main.tsx\" \"src/**/*.{css,module.css,json,ts,tsx}\" \"*.{yaml,json,ts}\" \"eslint.config.mjs\"",
     "ci": "pnpm run format && pnpm run lint && pnpm run build"
   },

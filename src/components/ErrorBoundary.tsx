@@ -1,5 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
-import { resetActivityData } from '../hooks/useActivities';
+import { resetActivityData } from '../core/hooks/useActivities';
 
 interface Props {
   children: ReactNode;
