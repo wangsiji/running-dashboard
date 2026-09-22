@@ -1,9 +1,12 @@
 import datetime
+import json
 import random
 import string
 
+from config import PLACES_FILE
 from geopy.geocoders import Nominatim, options
 from sqlalchemy import (
+    JSON,
     Column,
     Float,
     Integer,
@@ -29,6 +32,46 @@ options.default_user_agent = "running_page"
 # reverse the location (lat, lon) -> location detail
 g = Nominatim(user_agent=randomword())
 
+_places = None
+
+
+def lookup_place(start_point):
+    """查本地坐标缓存（~100m 网格）。
+
+    仓库里带一份 data/places.json：同一个起点只查一次 Nominatim，CI 里既不必
+    为 267 条活动打 267 次（会被限流、还会整批失败），也不再依赖 runner 能连上
+    OSM。没命中再回落到 Nominatim。
+    """
+    global _places
+    if _places is None:
+        try:
+            with open(PLACES_FILE, encoding="utf-8") as f:
+                _places = json.load(f)
+        except Exception:  # noqa: BLE001
+            _places = {}
+    if not start_point:
+        return ""
+    key = f"{round(start_point.lat, 3):.3f},{round(start_point.lon, 3):.3f}"
+    return _places.get(key, "")
+
+
+def reverse_geocode(start_point):
+    """Nominatim 反查（缓存未命中时才走）。"""
+    if not start_point:
+        return ""
+    for _ in range(2):  # 一次失败重试一次，仍失败就放弃
+        try:
+            return str(
+                g.reverse(
+                    f"{start_point.lat}, {start_point.lon}",
+                    language="zh-CN",  # type: ignore
+                    timeout=15,
+                )
+            )
+        except Exception:  # noqa: BLE001, S112
+            continue
+    return ""
+
 
 ACTIVITY_KEYS = [
     "run_id",
@@ -44,6 +87,7 @@ ACTIVITY_KEYS = [
     "average_heartrate",
     "average_speed",
     "elevation_gain",
+    "best_efforts",
 ]
 
 
@@ -64,6 +108,7 @@ class Activity(Base):
     average_heartrate = Column(Float)
     average_speed = Column(Float)
     elevation_gain = Column(Float)
+    best_efforts = Column(JSON)
     streak = None
 
     def to_dict(self):
@@ -102,32 +147,18 @@ def update_or_create_activity(session, run_activity):
         ):
             current_elevation_gain = float(run_activity.elevation_gain)
 
-        if not activity:
-            start_point = run_activity.start_latlng
-            location_country = getattr(run_activity, "location_country", "")
-            # or China for #176 to fix
-            if not location_country and start_point or location_country == "China":
-                try:
-                    location_country = str(
-                        g.reverse(
-                            f"{start_point.lat}, {start_point.lon}",
-                            language="zh-CN",  # type: ignore
-                            timeout=15,
-                        )
-                    )
-                # limit (only for the first time)
-                except Exception:  # noqa: BLE001
-                    try:
-                        location_country = str(
-                            g.reverse(
-                                f"{start_point.lat}, {start_point.lon}",
-                                language="zh-CN",  # type: ignore
-                                timeout=15,
-                            )
-                        )
-                    except Exception:  # noqa: S110, BLE001
-                        pass
+        # 地点要在「新建」和「更新」两条路径上都补：以前这段只写在新建分支里，
+        # 于是历史记录一旦是空的就永远是空的（重新同步也不会回填）。
+        start_point = getattr(run_activity, "start_latlng", None)
+        location_country = getattr(run_activity, "location_country", "") or ""
+        if not location_country and activity:
+            location_country = activity.location_country or ""
+        if location_country == "China":  # 历史脏值，重查
+            location_country = ""
+        if not location_country:
+            location_country = lookup_place(start_point) or reverse_geocode(start_point)
 
+        if not activity:
             activity = Activity(
                 run_id=run_activity.id,
                 name=run_activity.name,
@@ -145,6 +176,7 @@ def update_or_create_activity(session, run_activity):
                 summary_polyline=(
                     run_activity.map and run_activity.map.summary_polyline or ""
                 ),
+                best_efforts=getattr(run_activity, "best_efforts", None) or None,
             )
             session.add(activity)
             created = True
@@ -161,6 +193,11 @@ def update_or_create_activity(session, run_activity):
             activity.summary_polyline = (
                 run_activity.map and run_activity.map.summary_polyline or ""
             )
+            activity.best_efforts = (
+                getattr(run_activity, "best_efforts", None) or activity.best_efforts
+            )
+            if location_country:
+                activity.location_country = location_country
     except Exception as e:  # noqa: BLE001
         print(f"something wrong with {run_activity.id}")
         print(str(e))

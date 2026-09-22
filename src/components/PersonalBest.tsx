@@ -1,7 +1,6 @@
 import { memo } from 'react';
 import type { Activity } from '../core/types';
 import { useLocale } from '../core/hooks/useLocale';
-import { parseMovingTime } from '../core/hooks/useActivities';
 
 interface PersonalBestProps {
   activities: Activity[];
@@ -20,11 +19,11 @@ function formatTime(seconds: number): string {
 // 距离窗口贴着真实比赛距离（含 GPS 误差余量）。放宽会让训练跑混进来：
 // 例如 20.00km 的日常跑不该被算成半马 PB。
 const DISTANCES = [
-  { key: '5K', min: 4.9, max: 5.3 },
-  { key: '10K', min: 9.9, max: 10.4 },
-  { key: 'Half Marathon', min: 20.9, max: 21.6 },
-  { key: 'Marathon', min: 41.5, max: 43.5 },
-];
+  { key: '5k', zh: '5公里', en: '5K' },
+  { key: '10k', zh: '10公里', en: '10K' },
+  { key: 'half', zh: '半程马拉松', en: 'Half Marathon' },
+  { key: 'marathon', zh: '全程马拉松', en: 'Marathon' },
+] as const;
 
 export const PersonalBest = memo(function PersonalBest({
   activities,
@@ -32,43 +31,15 @@ export const PersonalBest = memo(function PersonalBest({
 }: PersonalBestProps) {
   const { locale } = useLocale();
 
-  // Only outdoor runs with valid GPS tracks (polyline must be substantial, not just a point)
-  const runs = activities.filter(
-    (a) =>
-      a.type === 'Run' && a.summary_polyline && a.summary_polyline.length > 20
-  );
-
-  const labels: Record<string, string> =
-    locale === 'zh'
-      ? {
-          '5K': '5公里',
-          '10K': '10公里',
-          'Half Marathon': '半程马拉松',
-          Marathon: '全程马拉松',
-        }
-      : {
-          '5K': '5K',
-          '10K': '10K',
-          'Half Marathon': 'Half Marathon',
-          Marathon: 'Marathon',
-        };
-
-  const bests = DISTANCES.map(({ key, min, max }) => {
-    const matching = runs.filter((a) => {
-      const km = a.distance / 1000;
-      if (km < min || km > max) return false;
-      // Filter out GPS drift: pace must be reasonable (3:00/km ~ 8:00/km)
-      const time = parseMovingTime(a.moving_time);
-      const pacePerKm = time / km; // seconds per km
-      return pacePerKm >= 180 && pacePerKm <= 480; // 3min/km to 8min/km
-    });
-    if (matching.length === 0) return { key, activity: null, time: 0 };
-    const best = matching.reduce((b, a) => {
-      return parseMovingTime(a.moving_time) < parseMovingTime(b.moving_time)
-        ? a
-        : b;
-    });
-    return { key, activity: best, time: parseMovingTime(best.moving_time) };
+  // 按高驰口径取「最好分段」：成绩由 sync 从 FIT 逐点记录算好放进 best_efforts。
+  // 这样马拉松里跑出的最快 21.0975km 会算作半马成绩，和手表 App 显示一致。
+  const bests = DISTANCES.map(({ key }) => {
+    let pick: { activity: Activity; time: number } | null = null;
+    for (const a of activities) {
+      const t = a.best_efforts?.[key];
+      if (t && (!pick || t < pick.time)) pick = { activity: a, time: t };
+    }
+    return { key, activity: pick?.activity ?? null, time: pick?.time ?? 0 };
   });
 
   const hasBests = bests.some((b) => b.activity !== null);
@@ -107,7 +78,9 @@ export const PersonalBest = memo(function PersonalBest({
             onClick={() => activity && onSelectActivity?.(activity)}
           >
             <span className="text-xs text-[var(--color-text)]">
-              {labels[key]}
+              {locale === 'zh'
+                ? DISTANCES.find((d) => d.key === key)?.zh
+                : DISTANCES.find((d) => d.key === key)?.en}
             </span>
             <span
               className={`font-mono text-xs font-bold ${activity ? 'text-[var(--color-accent)]' : 'text-[var(--color-muted)]'}`}

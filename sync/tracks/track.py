@@ -22,6 +22,40 @@ from tcxreader.tcxreader import TCXReader
 from .exceptions import TrackLoadError
 from .utils import get_normalized_sport_type, parse_datetime_to_local
 
+# 高驰 App 的「个人最佳」按最好分段算：马拉松里跑出的最快 21.0975km 也算半马成绩。
+# 这里用同样口径，从逐点 (时间, 累计距离) 里算，展示的数字才能和手表对上。
+BEST_EFFORT_TARGETS = (
+    (5000, "5k"),
+    (10000, "10k"),
+    (21097.5, "half"),
+    (42195, "marathon"),
+)
+
+
+def best_efforts(points):
+    """points: [(timestamp_seconds, cumulative_meters)] → {档位: 秒数}"""
+    if len(points) < 10:
+        return {}
+    total = points[-1][1]
+    out = {}
+    for target, key in BEST_EFFORT_TARGETS:
+        if total < target * 0.99:
+            continue
+        n = len(points)
+        j, best = 0, None
+        for i in range(n):
+            while j < n and points[j][1] - points[i][1] < target:
+                j += 1
+            if j >= n:
+                break
+            span = points[j][0] - points[i][0]
+            if best is None or span < best:
+                best = span
+        if best:
+            out[key] = int(best)
+    return out
+
+
 start_point = namedtuple("start_point", "lat lon")
 run_map = namedtuple("polyline", "summary_polyline")
 
@@ -44,6 +78,7 @@ class Track:
         self.polylines = []
         self.polyline_str = ""
         self.track_name = None
+        self.best_efforts = {}
         self.start_time = None
         self.end_time = None
         self.start_time_local = None
@@ -398,6 +433,13 @@ class Track:
         self.moving_dict["average_speed"] = message.get(
             "enhanced_avg_speed"
         ) or message.get("avg_speed", 0)
+        points = [
+            (r["timestamp"], r["distance"])
+            for r in fit["record_mesgs"]
+            if r.get("timestamp") is not None and r.get("distance") is not None
+        ]
+        self.best_efforts = best_efforts(points)
+
         for record in fit["record_mesgs"]:
             if "position_lat" in record and "position_long" in record:
                 lat = record["position_lat"] / SEMICIRCLE
@@ -470,6 +512,7 @@ class Track:
             "name": (self.track_name if self.track_name else ""),  # maybe change later
             "type": self.type,
             "subtype": (self.subtype if self.subtype else ""),
+            "best_efforts": self.best_efforts or None,
             "start_date": self.start_time.strftime("%Y-%m-%d %H:%M:%S"),
             "end": self.end_time.strftime("%Y-%m-%d %H:%M:%S"),
             "start_date_local": self.start_time_local.strftime("%Y-%m-%d %H:%M:%S"),

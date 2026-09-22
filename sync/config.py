@@ -16,6 +16,7 @@ DATA_DIR = os.path.join(ROOT, "data")
 SQL_FILE = os.path.join(DATA_DIR, "activities.db")  # 活动库 (sqlite)
 JSON_FILE = os.path.join(DATA_DIR, "activities.json")  # 站点数据源
 SYNCED_FILE = os.path.join(DATA_DIR, "imported.json")  # 已同步 id 记录
+PLACES_FILE = os.path.join(DATA_DIR, "places.json")  # 坐标(~100m网格) → 地点名
 
 # ---- 轨迹原始文件 ----
 FIT_FOLDER = os.path.join(DATA_DIR, "fit")

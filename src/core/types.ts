@@ -14,6 +14,10 @@ export interface Activity {
   elevation_gain: number | null;
   source: string;
   streak: number;
+  /** 最好分段成绩（秒）：高驰口径，马拉松里跑出的最快半马也算半马成绩 */
+  best_efforts?: Partial<
+    Record<'5k' | '10k' | 'half' | 'marathon', number>
+  > | null;
 }
 
 export type SportFilter = 'all' | 'Run';
