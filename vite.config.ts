@@ -88,10 +88,10 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      '@data': path.resolve(__dirname, './data'),
       '@config': path.resolve(__dirname, 'config.yml'),
       '@core': path.resolve(__dirname, './src/core'),
       '@themes': path.resolve(__dirname, './src/themes'),
-      '@assets': path.resolve(__dirname, './assets'),
     },
   },
   build: {

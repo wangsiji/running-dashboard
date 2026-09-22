@@ -7,7 +7,7 @@ on:
   push:
     branches: [master]
     paths:
-      - 'run_page/**'
+      - 'sync/**'
       - 'requirements.txt'
       - '.github/workflows/run_data_sync.yml'
 
@@ -41,7 +41,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Run sync Coros script
-        run: python run_page/coros_sync.py ${{ secrets.COROS_ACCOUNT }} ${{ secrets.COROS_PASSWORD }}
+        run: python sync/coros.py ${{ secrets.COROS_ACCOUNT }} ${{ secrets.COROS_PASSWORD }}
 
       - name: Push new runs
         run: |

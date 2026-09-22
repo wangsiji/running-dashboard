@@ -20,7 +20,6 @@ _site/
 
 config.yaml
 .venv/
-.pdm-python
 
 route.png
 route.svg

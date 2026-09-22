@@ -29,7 +29,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "data:clean": "rm -f run_page/data.db {GPX,TCX,FIT}_OUT/* activities/* src/static/activities.json",
+    "data:clean": "rm -rf data/activities.db data/activities.json data/imported.json data/fit/* data/gpx/* data/tcx/*",
     "build": "vite build",
     "develop": "vite dev",
     "dev": "vite dev",

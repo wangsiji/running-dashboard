@@ -207,7 +207,7 @@ export function getAvailableYears(activities: Activity[]): number[] {
 }
 
 // Async data loading (fetch-based, compatible with Suspense)
-import activitiesUrl from '@/static/activities.json?url';
+import activitiesUrl from '@data/activities.json?url';
 
 let activityDataCache: Activity[] | null = null;
 let activityDataError: unknown = null;

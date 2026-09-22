@@ -4,11 +4,11 @@ on:
   pull_request:
   push:
     branches: [master]
-    # 只在代码变动时跑；每日数据提交（data.db / FIT_OUT / activities.json）不触发
+    # 只在代码变动时跑；每日数据提交（data/ 下的 db、FIT、JSON）不触发
     paths:
       - 'src/**'
       - 'public/**'
-      - 'run_page/*.py'
+      - 'sync/*.py'
       - 'requirements*.txt'
       - 'package.json'
       - 'pnpm-lock.yaml'
@@ -34,7 +34,7 @@ jobs:
         run: pip install -r requirements-dev.txt
 
       - name: Smoke test - GPX 解析链路
-        run: python run_page/gpx_sync.py
+        run: python sync/gpx.py
 
       - name: Check formatting (black)
         run: black . --diff --color && black . --check
