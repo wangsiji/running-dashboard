@@ -83,6 +83,9 @@ class Coros:
             activities = data.get("data", {}).get("dataList", None)
             if not activities:
                 break
+            if page_number == 1:
+                import json as _json
+                print("DEBUG-FIELDS:", _json.dumps(activities[0], ensure_ascii=False)[:900])
             for activity in activities:
                 label_id = activity["labelId"]
                 sport_type = activity["sportType"]
