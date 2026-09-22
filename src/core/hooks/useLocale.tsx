@@ -16,15 +16,11 @@ const LocaleContext = createContext<LocaleContextValue>({
 });
 
 export function LocaleProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocale] = useState<Locale>(() => {
-    const stored = localStorage.getItem('locale');
-    return (stored as Locale) || DEFAULT_LOCALE;
-  });
+  // 不读 localStorage：同域名下的旧站存过 'locale'，会把这里的默认值一直盖掉，
+  // 而界面里并没有语言切换入口。默认语言只认 config.yml 的 locale。
+  const [locale, setLocale] = useState<Locale>(DEFAULT_LOCALE);
 
-  const updateLocale = useCallback((l: Locale) => {
-    setLocale(l);
-    localStorage.setItem('locale', l);
-  }, []);
+  const updateLocale = useCallback((l: Locale) => setLocale(l), []);
 
   const t = useCallback(
     (key: string) => {

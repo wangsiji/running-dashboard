@@ -26,6 +26,7 @@ import { CalendarWidget } from '@/components/CalendarWidget';
 import { ProfileCard } from '@/components/ProfileCard';
 import { PersonalBest } from '@/components/PersonalBest';
 import { ChinaMap } from '@/components/ChinaMap';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 const TracksPage = lazy(() =>
   import('@/components/TracksPage').then((module) => ({
@@ -209,12 +210,15 @@ function Dashboard() {
                   onSelectProvince={selectProvince}
                 />
                 <div ref={routeSectionRef} className="scroll-mt-28">
-                  <RouteMap
-                    activities={provinceFiltered}
-                    selectedActivity={selectedActivity}
-                    dark={dark}
-                    onClearSelection={() => setSelectedActivity(null)}
-                  />
+                  {/* 地图崩了只坏这一块，不能连累整页 */}
+                  <ErrorBoundary compact title={t('routeMapFailed')}>
+                    <RouteMap
+                      activities={provinceFiltered}
+                      selectedActivity={selectedActivity}
+                      dark={dark}
+                      onClearSelection={() => setSelectedActivity(null)}
+                    />
+                  </ErrorBoundary>
                 </div>
                 <PersonalBest
                   activities={activities}

@@ -98,6 +98,25 @@ export function extractProvince(loc: string | null): string | null {
   return null;
 }
 
+/**
+ * 高驰把反向地理编码的地址塞在 location_country 里，从近到远逗号分隔，例如
+ * "大理大学, 弘圣路, …, 大理市, 大理白族自治州, 云南省, 671003, 中国"。
+ * 表里只放最内层的市（没有市退到 区/县/州/旗），太长不好看。
+ */
+export function formatPlace(loc: string | null): string {
+  if (!loc || loc === 'None') return '';
+  if (loc.startsWith('{')) return extractProvince(loc) ?? '';
+  const parts = loc
+    .split(',')
+    .map((s) => s.trim())
+    .filter((p) => p && p !== '中国' && p !== 'China' && !/^\d{5,6}$/.test(p));
+  for (const re of [/市$/, /[区县州旗盟]$/]) {
+    for (let i = parts.length - 1; i >= 0; i--)
+      if (re.test(parts[i])) return parts[i];
+  }
+  return parts[parts.length - 1] ?? '';
+}
+
 export function useFilteredActivities(
   activities: Activity[],
   filter: SportFilter,

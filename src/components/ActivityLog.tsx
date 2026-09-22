@@ -1,6 +1,10 @@
 import { useState, useMemo } from 'react';
 import type { Activity, SportFilter } from '../core/types';
-import { formatDuration, formatPace } from '../core/hooks/useActivities';
+import {
+  formatDuration,
+  formatPace,
+  formatPlace,
+} from '../core/hooks/useActivities';
 import { useLocale } from '../core/hooks/useLocale';
 
 interface ActivityLogProps {
@@ -167,11 +171,11 @@ export function ActivityLog({
             <tr className="border-b border-[var(--color-border)] text-left text-[var(--color-muted)]">
               <th className="pb-3 font-medium">{t('date')}</th>
               <th className="pb-3 font-medium">{t('type')}</th>
-              <th className="pb-3 font-medium">{t('name')}</th>
               <th className="pb-3 font-medium">{t('distance')}</th>
               <th className="pb-3 font-medium">{t('duration')}</th>
               <th className="pb-3 font-medium">{t('pace')}</th>
               <th className="pb-3 font-medium">{t('hr')}</th>
+              <th className="pb-3 font-medium">{t('location')}</th>
             </tr>
           </thead>
           <tbody>
@@ -219,7 +223,6 @@ export function ActivityLog({
                     {typeIcon(a.type)} {a.type}
                   </span>
                 </td>
-                <td className="py-3">{a.name || t('run')}</td>
                 <td className="py-3 font-mono font-medium">
                   {(a.distance / 1000).toFixed(1)}
                   <span className="ml-1 text-xs font-normal text-[var(--color-muted)]">
@@ -234,6 +237,14 @@ export function ActivityLog({
                 </td>
                 <td className="py-3 text-[var(--color-muted)]">
                   {a.average_heartrate ? Math.round(a.average_heartrate) : '--'}
+                </td>
+                <td className="py-3 text-[var(--color-muted)]">
+                  <span
+                    className="block max-w-[13rem] truncate"
+                    title={a.location_country ?? undefined}
+                  >
+                    {formatPlace(a.location_country) || '--'}
+                  </span>
                 </td>
               </tr>
             ))}

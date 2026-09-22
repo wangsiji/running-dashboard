@@ -17,11 +17,13 @@ function formatTime(seconds: number): string {
   return `${m}:${String(s).padStart(2, '0')}`;
 }
 
+// 距离窗口贴着真实比赛距离（含 GPS 误差余量）。放宽会让训练跑混进来：
+// 例如 20.00km 的日常跑不该被算成半马 PB。
 const DISTANCES = [
-  { key: '5K', min: 4.8, max: 5.5 },
-  { key: '10K', min: 9.5, max: 11 },
-  { key: 'Half Marathon', min: 20, max: 22.5 },
-  { key: 'Marathon', min: 41, max: 44 },
+  { key: '5K', min: 4.9, max: 5.3 },
+  { key: '10K', min: 9.9, max: 10.4 },
+  { key: 'Half Marathon', min: 20.9, max: 21.6 },
+  { key: 'Marathon', min: 41.5, max: 43.5 },
 ];
 
 export const PersonalBest = memo(function PersonalBest({

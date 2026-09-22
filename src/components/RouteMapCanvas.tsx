@@ -7,6 +7,10 @@ import { MAPBOX_TOKEN } from '../core/config';
 import { useLocale } from '../core/hooks/useLocale';
 import './RouteMap.css';
 
+// mapbox-gl v3 默认 REQUIRE_ACCESS_TOKEN=true：没配 token 时（用 CARTO 免费底图）
+// 连第三方样式的请求都会抛错，地图永远加载不出来。这里关掉该校验。
+if (!MAPBOX_TOKEN) mapboxgl.config.REQUIRE_ACCESS_TOKEN = false;
+
 export interface RouteMapProps {
   activities: Activity[];
   selectedActivity?: Activity | null;
@@ -186,18 +190,16 @@ export function RouteMapCanvas({
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
-    let failed = false;
     const onError = (event: mapboxgl.ErrorEvent) => {
       const code = (event.error as Error & { status?: number }).status;
       if (provider === 'mapbox' && (code === 401 || code === 403)) {
         setProvider('carto');
-      } else {
-        failed = true;
-        setStatus('error');
       }
+      // 其它错误（个别瓦片/雪碧图 404）不当作底图失败：mapbox-gl 对这些也发 error 事件，
+      // 一律标红会把能用的地图误报成「加载失败」。真正失败由下面的超时兜底。
     };
     const onIdle = () => {
-      if (!failed) setStatus('ready');
+      if (styleReadyRef.current) setStatus('ready');
     };
     const onLoading = () => setStatus('loading');
     map.on('error', onError);
@@ -209,9 +211,11 @@ export function RouteMapCanvas({
       localFontFamily: undefined,
       localIdeographFontFamily: 'sans-serif',
     });
+    // 用 styleReadyRef 而不是 isStyleLoaded()：后者还要等所有瓦片源就绪，
+    // 慢网络下必然超过 15 秒 → 误报。这里只判「样式表本身有没有 load 过」。
     const timer = window.setTimeout(() => {
-      if (!map.isStyleLoaded()) setStatus('error');
-    }, 15000);
+      if (!styleReadyRef.current) setStatus('error');
+    }, 20000);
     return () => {
       window.clearTimeout(timer);
       map.off('error', onError);
