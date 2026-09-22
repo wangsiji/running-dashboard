@@ -15,13 +15,13 @@ on:
   workflow_call:
     inputs:
       save_data_in_github_cache:
-        required: true
+        required: false
         type: boolean
         default: false
       data_cache_prefix:
-        required: true
+        required: false
         type: string
-        default: track_data
+        default: 'track_data'
 
 # Allow one concurrent deployment
 concurrency:

@@ -1,9 +1,0 @@
-name: Probe2
-on:
-  workflow_dispatch:
-jobs:
-  call:
-    uses: ./.github/workflows/gh-pages.yml
-    with:
-      save_data_in_github_cache: false
-      data_cache_prefix: 'probe'
