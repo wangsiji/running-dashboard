@@ -6,6 +6,11 @@ import type { Activity } from '../core/types';
 import { MAPBOX_TOKEN } from '../core/config';
 import { useLocale } from '../core/hooks/useLocale';
 import './RouteMap.css';
+// maplibre 6 运行时会按路径 new Worker() 加载渲染 worker。GH Pages 子路径(/running-dashboard/)
+// 下相对 URL 解析错 → "Worker failed to load"。用 ?url 让 Vite 按 BASE_URL 产出正确资产 URL。
+// eslint-disable-next-line import/default
+import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
+if (maplibreWorkerUrl) maplibregl.setWorkerUrl(maplibreWorkerUrl);
 
 export interface RouteMapProps {
   activities: Activity[];
