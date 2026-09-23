@@ -7,10 +7,6 @@ import { MAPBOX_TOKEN } from '../core/config';
 import { useLocale } from '../core/hooks/useLocale';
 import './RouteMap.css';
 
-// mapbox-gl v3 默认 REQUIRE_ACCESS_TOKEN=true：没配 token 时（用 CARTO 免费底图）
-// 连第三方样式的请求都会抛错，地图永远加载不出来。这里关掉该校验。
-if (!MAPBOX_TOKEN) mapboxgl.config.REQUIRE_ACCESS_TOKEN = false;
-
 export interface RouteMapProps {
   activities: Activity[];
   selectedActivity?: Activity | null;
