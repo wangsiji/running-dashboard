@@ -142,10 +142,28 @@ export function RouteMapCanvas({
 
   useEffect(() => {
     if (!containerRef.current || !panelRef.current) return;
+    // CARTO 官方 style 引用了 3 个已从 tiles.basemaps.cartocdn.com 下架的字体
+    // （HanWangHeiLight / NanumBarunGothic / Montserrat *Italic），500 时 fetch 直接
+    // 404 → mapbox 抛 error 且标注文字渲染不出来。这里在 transformRequest 里把失效
+    // 字体改写为等效的现有字体，一行修掉全部 27 个文字图层，无需改 style。
+    const FONT_FIX = new Map<string, string>([
+      ['HanWangHeiLight%20Regular', 'Noto%20Sans%20Regular'],
+      ['NanumBarunGothic%20Regular', 'Noto%20Sans%20Regular'],
+      ['Montserrat%20Regular%20Italic', 'Open%20Sans%20Italic'],
+      ['Montserrat%20Medium%20Italic', 'Open%20Sans%20Italic'],
+    ]);
     const map = new mapboxgl.Map({
       container: containerRef.current,
       accessToken: MAPBOX_TOKEN,
       language: zh ? 'zh-Hans' : 'en',
+      transformRequest: (url, resourceType) => {
+        if (resourceType === 'Glyphs') {
+          for (const [bad, good] of FONT_FIX) {
+            if (url.includes(bad)) url = url.replace(bad, good);
+          }
+        }
+        return { url };
+      },
       style: { version: 8, sources: {}, layers: [] },
       center: [121.4, 31.2],
       zoom: 10,
