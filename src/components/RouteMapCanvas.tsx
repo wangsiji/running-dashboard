@@ -193,23 +193,18 @@ export function RouteMapCanvas({
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
-    let failed = false;
     const onError = (event: mapboxgl.ErrorEvent) => {
       const code = (event.error as Error & { status?: number }).status;
-      // 资源 HTTP 404（字体/个别瓦片/雪碧图缺失）是 CARTO 常见而致命的——字体缺失
-      // 地图照样渲染，强行标 error 会误报「底图失败」整层替换掉本来能用的地图。
-      // 只在真正的失败（网络断、非 404 错误）才标 error。
-      if (code === 404 || code === 0) return;
       if (provider === 'mapbox' && (code === 401 || code === 403)) {
         setProvider('carto');
-      } else {
-        failed = true;
-        setStatus('error');
+        return;
       }
+      // 其余错误（字体/个别瓦片/sprite 404、网络闪断、CORS）都不致命：mapbox 会
+      // 继续渲染能拿到的部分。把这些标成 error 只会把本来能用的地图整层替换成
+      // 「底图加载失败」。真实致命失败（style 本体 load 不了）由下方 15s 兜底。
+      console.warn('[RouteMap] non-fatal map error ignored:', event.error);
     };
-    const onIdle = () => {
-      if (!failed) setStatus('ready');
-    };
+    const onIdle = () => setStatus('ready');
     const onLoading = () => setStatus('loading');
     map.on('error', onError);
     map.on('idle', onIdle);
