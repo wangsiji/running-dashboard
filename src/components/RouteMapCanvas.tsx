@@ -193,6 +193,10 @@ export function RouteMapCanvas({
     let failed = false;
     const onError = (event: mapboxgl.ErrorEvent) => {
       const code = (event.error as Error & { status?: number }).status;
+      // 资源 HTTP 404（字体/个别瓦片/雪碧图缺失）是 CARTO 常见而致命的——字体缺失
+      // 地图照样渲染，强行标 error 会误报「底图失败」整层替换掉本来能用的地图。
+      // 只在真正的失败（网络断、非 404 错误）才标 error。
+      if (code === 404 || code === 0) return;
       if (provider === 'mapbox' && (code === 401 || code === 403)) {
         setProvider('carto');
       } else {
