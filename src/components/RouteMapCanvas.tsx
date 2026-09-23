@@ -27,6 +27,34 @@ const routeCache = new WeakMap<
   }[]
 >();
 
+// CARTO 官方 style 里 text-font 栈引用了 3 个已从 tiles.basemaps.cartocdn.com
+// 下架的字体（HanWangHeiLight / NanumBarunGothic / Montserrat *Italic），mapbox
+// 加载这些 glyph 会 404 抛 error 并让地图闪退。跑 mapbox 时字体走 worker 线程，
+// transformRequest 传不到 worker，必须在 style 层就把它们替换成存在的字体：
+// 中文 → Noto Sans Regular，意大利体 → Open Sans Italic。全部 27 个文字图层一次
+// 修完。已实测替换目标在 CARTO CDN 均 200。
+const FONT_SWAP: Record<string, string> = {
+  'HanWangHeiLight Regular': 'Noto Sans Regular',
+  'NanumBarunGothic Regular': 'Noto Sans Regular',
+  'Montserrat Regular Italic': 'Open Sans Italic',
+  'Montserrat Medium Italic': 'Open Sans Italic',
+};
+function sanitizeCartoStyle(style: mapboxgl.StyleSpecification): mapboxgl.StyleSpecification {
+  for (const layer of style.layers ?? []) {
+    // mapboxgl.LayerSpecification 是巨型联合类型，text-font 不存在于所有 layer
+    // 类型上，宽松处理：任何不是数组或含非字符串的 text-font 都跳过。
+    const raw = (layer as { layout?: { [k: string]: unknown } }).layout;
+    const fonts = raw?.['text-font'];
+    if (!Array.isArray(fonts) || fonts.some((f) => typeof f !== 'string')) continue;
+    const fixed = fonts.map((f) => FONT_SWAP[f as string] ?? f);
+    const seen = new Set<string>();
+    const uniq = fixed.filter((f) => !seen.has(f) && seen.add(f));
+    if (uniq.length !== fonts.length) raw!['text-font'] = uniq;
+  }
+  return style;
+}
+const cartoStyleCache = new Map<string, mapboxgl.StyleSpecification>();
+
 export function RouteMapCanvas({
   activities,
   selectedActivity,
@@ -46,10 +74,40 @@ export function RouteMapCanvas({
     'loading'
   );
   const [retry, setRetry] = useState(0);
+  const [resolvedStyle, setResolvedStyle] = useState<
+    mapboxgl.StyleSpecification | string | null
+  >(() => (provider === 'mapbox' ? `mapbox://styles/mapbox/${dark === false ? 'light' : 'dark'}-v11` : null));
   const style =
     provider === 'mapbox'
       ? `mapbox://styles/mapbox/${dark === false ? 'light' : 'dark'}-v11`
       : `https://basemaps.cartocdn.com/gl/${dark === false ? 'positron' : 'dark-matter'}-gl-style/style.json`;
+
+  // CARTO 字体会下架，官方 style 不定期仍然引用已删字体。这里 fetch 官方 style，
+  // 把失效字体替换成现有字体再交给 setStyle。结果缓存，避免每次 provider/dark 切换重取。
+  useEffect(() => {
+    if (provider !== 'carto') return;
+    let cancelled = false;
+    (async () => {
+      const cached = cartoStyleCache.get(style);
+      if (cached) {
+        setResolvedStyle(cached);
+        return;
+      }
+      try {
+        const res = await fetch(style);
+        if (!res.ok) return; // 保留 URL，mapbox 会尝试原样加载
+        const json = (await res.json()) as mapboxgl.StyleSpecification;
+        const clean = sanitizeCartoStyle(json);
+        cartoStyleCache.set(style, clean);
+        if (!cancelled) setResolvedStyle(clean);
+      } catch {
+        // 网络问题：保留原 URL
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [style, provider]);
 
   const routes = useMemo(() => {
     const items = selectedActivity ? [selectedActivity] : activities;
@@ -142,28 +200,10 @@ export function RouteMapCanvas({
 
   useEffect(() => {
     if (!containerRef.current || !panelRef.current) return;
-    // CARTO 官方 style 引用了 3 个已从 tiles.basemaps.cartocdn.com 下架的字体
-    // （HanWangHeiLight / NanumBarunGothic / Montserrat *Italic），500 时 fetch 直接
-    // 404 → mapbox 抛 error 且标注文字渲染不出来。这里在 transformRequest 里把失效
-    // 字体改写为等效的现有字体，一行修掉全部 27 个文字图层，无需改 style。
-    const FONT_FIX = new Map<string, string>([
-      ['HanWangHeiLight%20Regular', 'Noto%20Sans%20Regular'],
-      ['NanumBarunGothic%20Regular', 'Noto%20Sans%20Regular'],
-      ['Montserrat%20Regular%20Italic', 'Open%20Sans%20Italic'],
-      ['Montserrat%20Medium%20Italic', 'Open%20Sans%20Italic'],
-    ]);
     const map = new mapboxgl.Map({
       container: containerRef.current,
       accessToken: MAPBOX_TOKEN,
       language: zh ? 'zh-Hans' : 'en',
-      transformRequest: (url, resourceType) => {
-        if (resourceType === 'Glyphs') {
-          for (const [bad, good] of FONT_FIX) {
-            if (url.includes(bad)) url = url.replace(bad, good);
-          }
-        }
-        return { url };
-      },
       style: { version: 8, sources: {}, layers: [] },
       center: [121.4, 31.2],
       zoom: 10,
@@ -207,7 +247,7 @@ export function RouteMapCanvas({
 
   useEffect(() => {
     const map = mapRef.current;
-    if (!map) return;
+    if (!map || resolvedStyle == null) return;
     const onError = (event: mapboxgl.ErrorEvent) => {
       const code = (event.error as Error & { status?: number }).status;
       if (provider === 'mapbox' && (code === 401 || code === 403)) {
@@ -224,8 +264,8 @@ export function RouteMapCanvas({
     map.on('idle', onIdle);
     map.once('styledataloading', onLoading);
     styleReadyRef.current = false;
-    map.setStyle(style, {
-      diff: false,
+    map.setStyle(resolvedStyle, {
+      diff: true,
       localFontFamily: undefined,
       localIdeographFontFamily: 'sans-serif',
     });
@@ -240,11 +280,11 @@ export function RouteMapCanvas({
       map.off('idle', onIdle);
       map.off('styledataloading', onLoading);
     };
-  }, [style, provider, retry, zh]);
+  }, [resolvedStyle, provider, retry, zh]);
 
   useEffect(() => {
     const map = mapRef.current;
-    if (!map) return;
+    if (!map || resolvedStyle == null) return;
     const onStyleLoad = () => {
       styleReadyRef.current = true;
       drawRoutes();
@@ -254,7 +294,7 @@ export function RouteMapCanvas({
     return () => {
       map.off('style.load', onStyleLoad);
     };
-  }, [drawRoutes, style, retry, zh]);
+  }, [drawRoutes, resolvedStyle, retry, zh]);
 
   useEffect(() => {
     let wasFullscreen = document.fullscreenElement === panelRef.current;
