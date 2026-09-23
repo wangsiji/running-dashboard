@@ -27,34 +27,6 @@ const routeCache = new WeakMap<
   }[]
 >();
 
-// CARTO 官方 style 里 text-font 栈引用了 3 个已从 tiles.basemaps.cartocdn.com
-// 下架的字体（HanWangHeiLight / NanumBarunGothic / Montserrat *Italic），mapbox
-// 加载这些 glyph 会 404 抛 error 并让地图闪退。跑 mapbox 时字体走 worker 线程，
-// transformRequest 传不到 worker，必须在 style 层就把它们替换成存在的字体：
-// 中文 → Noto Sans Regular，意大利体 → Open Sans Italic。全部 27 个文字图层一次
-// 修完。已实测替换目标在 CARTO CDN 均 200。
-const FONT_SWAP: Record<string, string> = {
-  'HanWangHeiLight Regular': 'Noto Sans Regular',
-  'NanumBarunGothic Regular': 'Noto Sans Regular',
-  'Montserrat Regular Italic': 'Open Sans Italic',
-  'Montserrat Medium Italic': 'Open Sans Italic',
-};
-function sanitizeCartoStyle(style: mapboxgl.StyleSpecification): mapboxgl.StyleSpecification {
-  for (const layer of style.layers ?? []) {
-    // mapboxgl.LayerSpecification 是巨型联合类型，text-font 不存在于所有 layer
-    // 类型上，宽松处理：任何不是数组或含非字符串的 text-font 都跳过。
-    const raw = (layer as { layout?: { [k: string]: unknown } }).layout;
-    const fonts = raw?.['text-font'];
-    if (!Array.isArray(fonts) || fonts.some((f) => typeof f !== 'string')) continue;
-    const fixed = fonts.map((f) => FONT_SWAP[f as string] ?? f);
-    const seen = new Set<string>();
-    const uniq = fixed.filter((f) => !seen.has(f) && seen.add(f));
-    if (uniq.length !== fonts.length) raw!['text-font'] = uniq;
-  }
-  return style;
-}
-const cartoStyleCache = new Map<string, mapboxgl.StyleSpecification>();
-
 export function RouteMapCanvas({
   activities,
   selectedActivity,
@@ -74,40 +46,10 @@ export function RouteMapCanvas({
     'loading'
   );
   const [retry, setRetry] = useState(0);
-  const [resolvedStyle, setResolvedStyle] = useState<
-    mapboxgl.StyleSpecification | string | null
-  >(() => (provider === 'mapbox' ? `mapbox://styles/mapbox/${dark === false ? 'light' : 'dark'}-v11` : null));
   const style =
     provider === 'mapbox'
       ? `mapbox://styles/mapbox/${dark === false ? 'light' : 'dark'}-v11`
       : `https://basemaps.cartocdn.com/gl/${dark === false ? 'positron' : 'dark-matter'}-gl-style/style.json`;
-
-  // CARTO 字体会下架，官方 style 不定期仍然引用已删字体。这里 fetch 官方 style，
-  // 把失效字体替换成现有字体再交给 setStyle。结果缓存，避免每次 provider/dark 切换重取。
-  useEffect(() => {
-    if (provider !== 'carto') return;
-    let cancelled = false;
-    (async () => {
-      const cached = cartoStyleCache.get(style);
-      if (cached) {
-        setResolvedStyle(cached);
-        return;
-      }
-      try {
-        const res = await fetch(style);
-        if (!res.ok) return; // 保留 URL，mapbox 会尝试原样加载
-        const json = (await res.json()) as mapboxgl.StyleSpecification;
-        const clean = sanitizeCartoStyle(json);
-        cartoStyleCache.set(style, clean);
-        if (!cancelled) setResolvedStyle(clean);
-      } catch {
-        // 网络问题：保留原 URL
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [style, provider]);
 
   const routes = useMemo(() => {
     const items = selectedActivity ? [selectedActivity] : activities;
@@ -247,44 +189,44 @@ export function RouteMapCanvas({
 
   useEffect(() => {
     const map = mapRef.current;
-    if (!map || resolvedStyle == null) return;
+    if (!map) return;
+    let failed = false;
     const onError = (event: mapboxgl.ErrorEvent) => {
       const code = (event.error as Error & { status?: number }).status;
       if (provider === 'mapbox' && (code === 401 || code === 403)) {
         setProvider('carto');
+      } else {
+        failed = true;
+        setStatus('error');
       }
-      // 其它错误（个别瓦片/雪碧图 404）不当作底图失败：mapbox-gl 对这些也发 error 事件，
-      // 一律标红会把能用的地图误报成「加载失败」。真正失败由下面的超时兜底。
     };
     const onIdle = () => {
-      if (styleReadyRef.current) setStatus('ready');
+      if (!failed) setStatus('ready');
     };
     const onLoading = () => setStatus('loading');
     map.on('error', onError);
     map.on('idle', onIdle);
     map.once('styledataloading', onLoading);
     styleReadyRef.current = false;
-    map.setStyle(resolvedStyle, {
-      diff: true,
+    map.setStyle(style, {
+      diff: false,
       localFontFamily: undefined,
       localIdeographFontFamily: 'sans-serif',
     });
-    // 用 styleReadyRef 而不是 isStyleLoaded()：后者还要等所有瓦片源就绪，
-    // 慢网络下必然超过 15 秒 → 误报。这里只判「样式表本身有没有 load 过」。
     const timer = window.setTimeout(() => {
-      if (!styleReadyRef.current) setStatus('error');
-    }, 20000);
+      if (!map.isStyleLoaded()) setStatus('error');
+    }, 15000);
     return () => {
       window.clearTimeout(timer);
       map.off('error', onError);
       map.off('idle', onIdle);
       map.off('styledataloading', onLoading);
     };
-  }, [resolvedStyle, provider, retry, zh]);
+  }, [style, provider, retry, zh]);
 
   useEffect(() => {
     const map = mapRef.current;
-    if (!map || resolvedStyle == null) return;
+    if (!map) return;
     const onStyleLoad = () => {
       styleReadyRef.current = true;
       drawRoutes();
@@ -294,7 +236,7 @@ export function RouteMapCanvas({
     return () => {
       map.off('style.load', onStyleLoad);
     };
-  }, [drawRoutes, resolvedStyle, retry, zh]);
+  }, [drawRoutes, style, retry, zh]);
 
   useEffect(() => {
     let wasFullscreen = document.fullscreenElement === panelRef.current;
