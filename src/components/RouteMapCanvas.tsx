@@ -46,10 +46,13 @@ export function RouteMapCanvas({
     'loading'
   );
   const [retry, setRetry] = useState(0);
+  // CARTO 官方线上 style 引用了 3 个已下架字体（HanWangHeiLight 等），浏览器请求必
+  // 404/CORS 报错并把地图误判为加载失败。本地保存了一份已把失效字体重写为现存字体
+  // 的 positron style（public/carto-positron-clean.json），绕开网络源，一次干净。
   const style =
     provider === 'mapbox'
       ? `mapbox://styles/mapbox/${dark === false ? 'light' : 'dark'}-v11`
-      : `https://basemaps.cartocdn.com/gl/${dark === false ? 'positron' : 'dark-matter'}-gl-style/style.json`;
+      : `${import.meta.env.BASE_URL}${dark === false ? 'carto-positron-clean' : 'carto-darkmatter-clean'}.json`;
 
   const routes = useMemo(() => {
     const items = selectedActivity ? [selectedActivity] : activities;
