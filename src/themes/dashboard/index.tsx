@@ -209,6 +209,10 @@ function Dashboard() {
                   selectedProvince={selectedProvince}
                   onSelectProvince={selectProvince}
                 />
+                <PersonalBest
+                  activities={activities}
+                  onSelectActivity={selectActivity}
+                />
                 <div ref={routeSectionRef} className="scroll-mt-28">
                   {/* 地图崩了只坏这一块，不能连累整页 */}
                   <ErrorBoundary compact title={t('routeMapFailed')}>
@@ -220,10 +224,6 @@ function Dashboard() {
                     />
                   </ErrorBoundary>
                 </div>
-                <PersonalBest
-                  activities={activities}
-                  onSelectActivity={selectActivity}
-                />
                 <CalendarWidget
                   key={year ?? 'all'}
                   selectedActivity={selectedActivity}
