@@ -86,11 +86,9 @@ export const PersonalBest = memo(function PersonalBest({
               {locale === 'zh'
                 ? DISTANCES.find((d) => d.key === key)?.zh
                 : DISTANCES.find((d) => d.key === key)?.en}
-              {activity && (
-                <span className="block text-[10px] leading-tight text-[var(--color-muted)]">
-                  {formatDate(activity.start_date_local)}
-                </span>
-              )}
+            </span>
+            <span className="font-mono text-[10px] text-[var(--color-muted)]">
+              {activity ? formatDate(activity.start_date_local) : ''}
             </span>
             <span
               className={`font-mono text-xs font-bold ${activity ? 'text-[var(--color-accent)]' : 'text-[var(--color-muted)]'}`}
