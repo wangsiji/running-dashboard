@@ -82,13 +82,13 @@ export const PersonalBest = memo(function PersonalBest({
             }`}
             onClick={() => activity && onSelectActivity?.(activity)}
           >
+            <span className="font-mono text-[10px] text-[var(--color-muted)]">
+              {activity ? formatDate(activity.start_date_local) : '----'}
+            </span>
             <span className="text-xs text-[var(--color-text)]">
               {locale === 'zh'
                 ? DISTANCES.find((d) => d.key === key)?.zh
                 : DISTANCES.find((d) => d.key === key)?.en}
-            </span>
-            <span className="font-mono text-[10px] text-[var(--color-muted)]">
-              {activity ? formatDate(activity.start_date_local) : ''}
             </span>
             <span
               className={`font-mono text-xs font-bold ${activity ? 'text-[var(--color-accent)]' : 'text-[var(--color-muted)]'}`}
