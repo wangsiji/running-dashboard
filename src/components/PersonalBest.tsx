@@ -16,6 +16,11 @@ function formatTime(seconds: number): string {
   return `${m}:${String(s).padStart(2, '0')}`;
 }
 
+// start_date_local 形如 "2026-05-31 06:57:19"，只取日期部分。
+function formatDate(d: string): string {
+  return d.slice(0, 10);
+}
+
 // 距离窗口贴着真实比赛距离（含 GPS 误差余量）。放宽会让训练跑混进来：
 // 例如 20.00km 的日常跑不该被算成半马 PB。
 const DISTANCES = [
@@ -81,6 +86,11 @@ export const PersonalBest = memo(function PersonalBest({
               {locale === 'zh'
                 ? DISTANCES.find((d) => d.key === key)?.zh
                 : DISTANCES.find((d) => d.key === key)?.en}
+              {activity && (
+                <span className="block text-[10px] leading-tight text-[var(--color-muted)]">
+                  {formatDate(activity.start_date_local)}
+                </span>
+              )}
             </span>
             <span
               className={`font-mono text-xs font-bold ${activity ? 'text-[var(--color-accent)]' : 'text-[var(--color-muted)]'}`}
