@@ -2,7 +2,7 @@ name: Run Data Sync
 
 on:
   schedule:
-    - cron: '0 3 * * *' # 北京时间每天 11:00
+    - cron: '0 1 * * *' # 北京时间每天 09:00
   workflow_dispatch:
   push:
     branches: [master]
