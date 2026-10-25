@@ -171,13 +171,16 @@ class Generator:
 
         activity_list = self._fix_indoor_locations(activity_list)
 
-        # Persist indoor subtype and virtual polyline back to DB so SVG generation can pick it up
+        # Persist indoor subtype, virtual polyline and cleared location back to
+        # DB so SVG generation and the footprint map pick them up
         for a in activity_list:
             if a.get("subtype") == "indoor":
                 db_activity = self.session.query(Activity).get(a["run_id"])
                 if db_activity:
                     if db_activity.subtype != "indoor":
                         db_activity.subtype = "indoor"
+                    if db_activity.location_country:
+                        db_activity.location_country = ""
                     poly = a.get("summary_polyline", "")
                     if poly and not db_activity.summary_polyline:
                         db_activity.summary_polyline = poly
@@ -210,8 +213,6 @@ class Generator:
             "virtualrun",  # Strava / Keep indoor running
             "virtual_run",  # alternate form
         }
-        # ~10 m in degrees (0.0001° ≈ 11 m)
-        TINY_SPREAD_THRESHOLD = 0.0001
 
         # Classify each activity as indoor or outdoor and cache decoded coords
         classified = []  # (dict, is_indoor, decoded_coords_or_None)
@@ -238,7 +239,7 @@ class Generator:
                 lats = [c[0] for c in coords]
                 lngs = [c[1] for c in coords]
                 spread = max(max(lats) - min(lats), max(lngs) - min(lngs))
-                if spread < TINY_SPREAD_THRESHOLD:
+                if spread < INDOOR_SPREAD_THRESHOLD:
                     is_indoor = True
 
             classified.append((a, is_indoor, coords))
