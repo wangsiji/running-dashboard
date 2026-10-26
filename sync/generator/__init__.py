@@ -171,16 +171,17 @@ class Generator:
 
         activity_list = self._fix_indoor_locations(activity_list)
 
-        # Persist indoor subtype, virtual polyline and cleared location back to
-        # DB so SVG generation and the footprint map pick them up
+        # Persist indoor subtype, virtual polyline and inherited location back to
+        # DB so the activity log and footprint map pick them up. Indoor runs have
+        # no real GPS, so their location is inherited from the previous outdoor
+        # run (the same logic that builds the virtual polyline).
         for a in activity_list:
             if a.get("subtype") == "indoor":
                 db_activity = self.session.query(Activity).get(a["run_id"])
                 if db_activity:
                     if db_activity.subtype != "indoor":
                         db_activity.subtype = "indoor"
-                    if db_activity.location_country:
-                        db_activity.location_country = ""
+                    db_activity.location_country = a.get("location_country") or ""
                     poly = a.get("summary_polyline", "")
                     if poly and not db_activity.summary_polyline:
                         db_activity.summary_polyline = poly
