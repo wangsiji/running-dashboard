@@ -86,10 +86,12 @@ export const ChinaMap = memo(function ChinaMap({
     [features]
   );
 
-  // Build province → activity count map
+  // Build province → activity count map — indoor (treadmill) runs have no real
+  // GPS, so they must not claim a province on the footprint map.
   const provinceCount = useMemo(() => {
     const map = new Map<string, number>();
     for (const a of activities) {
+      if (a.subtype === 'indoor') continue;
       const p = extractProvince(a.location_country);
       if (p) map.set(p, (map.get(p) ?? 0) + 1);
     }
