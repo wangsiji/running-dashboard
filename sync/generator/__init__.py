@@ -246,6 +246,7 @@ class Generator:
 
         # Replace indoor polylines using nearest previous outdoor route
         last_outdoor_coords = None
+        last_outdoor_location = None
         indoor_count = 0
         for a, is_indoor, coords in classified:
             if not is_indoor:
@@ -253,19 +254,16 @@ class Generator:
                     last_outdoor_coords = coords
                     last_outdoor_location = a.get("location_country")
             else:
-                # Indoor activities have no real GPS — drop the stale location
-                # inherited from the previous outdoor run so the footprint map
-                # never claims you ran in that city. Do this unconditionally,
-                # even when no route can be built.
-                a["location_country"] = ""
                 if last_outdoor_coords is not None:
                     target_m = a.get("distance", 0)
                     route = _build_route_for_distance(last_outdoor_coords, target_m)
                     if len(route) >= 2:
                         a["summary_polyline"] = polyline_codec.encode(route)
-                # Normalize subtype to "indoor" for frontend/SVG
-                a["subtype"] = "indoor"
-                indoor_count += 1
+                    if not a.get("location_country") and last_outdoor_location:
+                        a["location_country"] = last_outdoor_location
+                    # Normalize subtype to "indoor" for frontend/SVG
+                    a["subtype"] = "indoor"
+                    indoor_count += 1
 
         if indoor_count > 0:
             print(
